@@ -323,12 +323,14 @@ class ProjectNewintro(WizardPanel):
 			
 
 	def GettingProjectFromInternet(self, event):
-		url = 'http://exmanide.kldp.net/ExmanIDEProjectsList.txt'
+		url = 'http://www.exman.pe.kr/ExmanIDEProjectsList.txt'
 		try:
 			con = urllib2.urlopen(url)
 		except urllib2.URLError, str:
 			return
 		list = con.readlines()
+		cachefile = os.getenv("HOME")+"/.ExmanIDE/ExmanIDEProjectsList.txt"
+		open(cachefile, "w").writelines(list)
 
 		self.FillProjectFromInternet(list)
         
@@ -458,8 +460,42 @@ class ProjectFinish(WizardPanel):
 			except urllib2.URLError, str:
 				wxMessageBox(trans("DownloadFail", self.language),"Warning",wxICON_HAND)
 				return
-			open("/tmp/aaa.zip","wb").write( con.read())
-				
+			cachefile = os.getenv("HOME")+"/.ExmanIDE/Template.zip"
+			open(cachefile, "wb").write(con.read())
+			import zipfile
+			fl = zipfile.ZipFile(cachefile, "r")
+			names = fl.namelist()
+			flag = 0
+			topdir = ""
+			"""
+			for name in names:
+				temp = name.split(self.config.pathsep)[0]
+				if topdir=="":
+					topdir = temp
+				if topdir!=temp:
+					flag = 1
+			"""
+			for name in names:
+				#print name
+				data = fl.read(name)
+				"""
+				if flag==0:
+					name = name[len(topdir)+1:]
+					if name=="":
+						continue
+				"""
+				tempfile= self.info["project_dir"] + self.config.pathsep + name
+				if tempfile[-1:]==self.config.pathsep:
+					if 0==os.path.exists(tempfile):
+						os.mkdir(tempfile)
+					#print  "Extract to "+tempfile 
+					continue;
+
+				fp=open(tempfile,"wb")
+				fp.write(data)
+				fp.close()
+				#print "Extract to "+tempfile
+			os.remove(cachefile)
 			
 		
 		WizardPanel.Finish(self, event)
