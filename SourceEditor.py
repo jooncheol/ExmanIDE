@@ -716,6 +716,9 @@ class SourceEditor(PythonSTC):
             self.SetLexType(filename)
             try:
                     self.SetText(open(filename,"r").read())
+            except UnicodeDecodeError:
+                print "UnicodeError"
+                pass
             except IOError:
                     pass
             self.EmptyUndoBuffer()
