@@ -1221,7 +1221,11 @@ class ExmanIDEFrontEnd(wxFrame):
 			stderr = self.process.GetErrorStream()
 			if stderr.CanRead():
 				text = stderr.read()
-				self.profile.stderr.SetText(self.profile.stderr.GetText()+text)
+                                try:
+                                    self.profile.stderr.SetText(self.profile.stderr.GetText()+text)
+                                except UnicodeDecodeError:
+                                    print text
+
 				self.profile.stderr.GotoLine(self.profile.stderr.GetLineCount())
 				self.profile.SetSelection(2) # stderr
     

@@ -154,12 +154,12 @@ def trans(key, Language):
 			"English":"Stop\tShift-F5",
 			},
 		"Menu_Debug_Next": {
-			"Korean":"다음\tF10",
-			"English":"Step Over\tF10",
+			"Korean":"다음\tF11",
+			"English":"Step Over\tF11",
 			},
 		"Menu_Debug_Step": {
-			"Korean":"들어가기\tF11",
-			"English":"Step\tF11",
+			"Korean":"들어가기\tF12",
+			"English":"Step\tF12",
 			},
 		"Menu_Debug_Arguments": {
 			"Korean":"아규먼트 설정...",

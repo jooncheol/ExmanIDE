@@ -15,6 +15,7 @@ import time
 import getext
 
 DEFAULTDIR = os.path.abspath(os.path.dirname(sys.argv[0]))
+SUPPORT_VIM = False
 
 class DescriptText(wxStyledTextCtrl):
 	def __init__(self,parent,config,main):
@@ -852,9 +853,9 @@ try:
             busy = wx.BusyInfo(trans("FileOpenByGVim", self.language))
             wx.Yield()
             time.sleep(1)
+            self.vim.SetFocus()
             os.system("gvim --servername %s --remote %s" % (self.servername, filename))
             os.system("gvim --servername %s --remote-send '<Esc>:cd %s<Return>'" % (self.servername, os.path.dirname(filename)))
-            self.vim.SetFocus()
         def Quit(self):
             os.system("gvim --servername %s --remote-send '<Esc>:q!'" % (self.servername))
         def GotoLine(self, line):
@@ -881,8 +882,9 @@ try:
             return 1,1
         def GetModify(self):
             return False
+    SUPPORT_VIM = True
 except:
-    SourceEditorVim = SourceEditor
+    SUPPORT_VIM = False
     pass
 
 class MultipleEditor(wxNotebook):	
@@ -932,6 +934,14 @@ class MultipleEditor(wxNotebook):
 			menuitem = wxMenuItem(menu, 2005,trans("Menu_Debug_Exec_Command",self.language))
 			menu.AppendItem(menuitem)
 			EVT_MENU(self, 2005, self.main.OnDebugExecCommand)
+
+                if SUPPORT_VIM==True:
+                    if self.GetPage(selection).Type()=="Vim":
+			menuitem = wxMenuItem(menu, 2006,trans("Menu_File_OpenWithScintilla",self.language))
+                    else:
+			menuitem = wxMenuItem(menu, 2006,trans("Menu_File_OpenWithVim",self.language))
+                    menu.AppendItem(menuitem)
+                    EVT_MENU(self, 2006, self.OnSwitchEditor)
 			
 		menuitem = wxMenuItem(menu, 2002,trans("CloseFile",self.language))
 		menu.AppendItem(menuitem)
@@ -939,6 +949,22 @@ class MultipleEditor(wxNotebook):
 		self.PopupMenu(menu, wxPoint(event.GetX(), event.GetY()))
 		menu.Destroy()
 		event.Skip() 
+	def OnSwitchEditor(self, event):
+            if self.GetPageCount()==0:
+                event.Skip()
+                return
+            selection = self.GetSelection()
+            path = self.openedfiles[selection][1]
+            filename = self.openedfiles[selection][2]
+            oldeditor = self.GetPage(selection)
+            oldeditor.Quit()
+            if oldeditor.Type()=="Vim":
+                editor = SourceEditor(self, self.config, self.main)
+            else:
+                editor = SourceEditorVim(self, self.config, self.main)
+            editor.Open(path)
+            self.InsertPage(selection, editor, filename)
+            self.RemovePage(selection+1)
 
 	def evtCloseFile(self,event):
 		try:
