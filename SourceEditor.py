@@ -856,6 +856,7 @@ try:
             self.vim.SetFocus()
             os.system("gvim --servername %s --remote %s" % (self.servername, filename))
             os.system("gvim --servername %s --remote-send '<Esc>:cd %s<Return>'" % (self.servername, os.path.dirname(filename)))
+            #print "gvim --servername %s --remote-send '<Esc>:cd %s<Return>'" % (self.servername, os.path.dirname(filename))
         def Quit(self):
             os.system("gvim --servername %s --remote-send '<Esc>:q!'" % (self.servername))
         def GotoLine(self, line):
@@ -864,6 +865,7 @@ try:
             pass
 	def ScrollToLine(self, line):
             self.GotoLine(line)
+            self.vim.SetFocus()
         def SetSelectionStart(self, line):
             pass
         def SetSelectionEnd(self, line):
@@ -960,8 +962,12 @@ class MultipleEditor(wxNotebook):
             oldeditor.Quit()
             if oldeditor.Type()=="Vim":
                 editor = SourceEditor(self, self.config, self.main)
+                if self.main.menubar.GetMenu(1).GetTitle()!=trans("Menu_Edit", self.language):
+                    self.main.setEditMenu()
             else:
                 editor = SourceEditorVim(self, self.config, self.main)
+                if self.main.menubar.GetMenu(1).GetTitle()==trans("Menu_Edit", self.language):
+                    self.main.menubar.Remove(1)
             editor.Open(path)
             self.InsertPage(selection, editor, filename)
             self.RemovePage(selection+1)
@@ -1152,16 +1158,20 @@ class MultipleEditor(wxNotebook):
 		else:
 			self.main.SetMenuStatus((),(305,601,602))
 			
-
-		
-		
-
 		if self.old_ctrltab_ctrlup==1:
 			oldselection = event.GetOldSelection()
 			if oldselection >= self.GetPageCount():
 				return
 			self.old_ctrltab_selection = oldselection
 			self.old_ctrltab_stc = self.GetPage(oldselection)
+
+		editor = self.GetPage(selectedIndex)
+                if editor.Type()=="Vim":
+		    if self.main.menubar.GetMenu(1).GetTitle()==trans("Menu_Edit", self.language):
+                        self.main.menubar.Remove(1)
+                else:
+		    if self.main.menubar.GetMenu(1).GetTitle()!=trans("Menu_Edit", self.language):
+                        self.main.setEditMenu()
 
 class SearchDialog(wxDialog):
 	def __init__(self,parent, config, main, stc, kind="Search"):

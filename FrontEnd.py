@@ -364,7 +364,7 @@ class ExmanIDEFrontEnd(wxFrame):
 		self.menuEdit.Append(508, trans("Menu_Edit_Find"), trans("Menu_Edit_Find"))
 		self.menuEdit.Append(509, trans("Menu_Edit_Replace"), trans("Menu_Edit_Replace"))
 		self.menuEdit.Append(510, trans("Menu_Edit_Goto"), trans("Menu_Edit_Goto"))
-		self.menubar.Append(self.menuEdit,trans("Menu_Edit"))
+		self.menubar.Insert(1, self.menuEdit,trans("Menu_Edit"))
 
 	def Homepage(self, event):
 		language = self.config.read_config("default_language")
