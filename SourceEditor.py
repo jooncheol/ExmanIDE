@@ -686,6 +686,8 @@ class SourceEditor(PythonSTC):
             if opt==None: opt=0
             self.SetIndent(int(opt))
 
+            self.encoding = ""
+
 
     def Type(self):
             return "Scintilla"
@@ -715,9 +717,10 @@ class SourceEditor(PythonSTC):
     def Open(self, filename, readonly=0):
             self.SetLexType(filename)
             try:
-                    self.SetText(open(filename,"r").read())
+                self.SetText(open(filename,"r").read())
             except UnicodeDecodeError:
-                print "UnicodeError"
+                self.SetText(open(filename,"r").read().decode("euc-kr"))
+                self.encoding = "euc-kr"
                 pass
             except IOError:
                     pass
@@ -1134,7 +1137,12 @@ class MultipleEditor(wxNotebook):
 				stc.SetLexType(filename)
 				basefilename = self.openedfiles[x][2]
 				debug("Save File: "+filename)
-				open(filename,"w").write(stc.GetText())
+                                data = ""
+                                if stc.Type()=="Scintilla" and stc.encoding=="euc-kr":
+                                    data = stc.GetText().encode("euc-kr")
+                                else:
+                                    data = stc.GetText()
+	    			open(filename,"w").write(data)
 				stc.SetSavePoint()
 				title = self.GetPageText(x)
 				if title[-1]=="*":
