@@ -218,6 +218,8 @@ class ExmanIDEFrontEnd(wxFrame):
 		self.menuView = wxMenu()
 		self.menuView.Append(801, trans("Menu_View_Prev"), trans("Menu_View_Prev"))
 		self.menuView.Append(802, trans("Menu_View_Next"), trans("Menu_View_Next"))
+		self.menuView.Append(803, "Standard Out\tF2", "Standard Out")
+		self.menuView.Append(804, "Standard Error\tF4", "Standard Error")
 		self.menubar.Append(self.menuView,trans("Menu_View"))
 
 		self.menuHelp = wxMenu()
@@ -269,6 +271,8 @@ class ExmanIDEFrontEnd(wxFrame):
 		EVT_MENU(self, 901, self.OnAbout)
 		EVT_MENU(self, 801, self.OnPrevSourceTab)
 		EVT_MENU(self, 802, self.OnNextSourceTab)
+		EVT_MENU(self, 803, self.OnStdOut)
+		EVT_MENU(self, 804, self.OnStdErr)
 		EVT_MENU(self, 902, self.OnUpdaterTimerEvent)
 		EVT_MENU(self, 903, self.SubmitBug)
 		EVT_MENU(self, 904, self.Homepage)
@@ -472,6 +476,11 @@ class ExmanIDEFrontEnd(wxFrame):
 		dialog.Centre(wxBOTH)
 		dialog.ShowModal()
 
+	def OnStdOut(self, event):
+            self.profile.SetSelection(1) # stdout
+	def OnStdErr(self, event):
+            self.profile.SetSelection(2) # stderr
+            
 	def OnPrevSourceTab(self, event):
             count = self.editor.GetPageCount()
             if count<=1:

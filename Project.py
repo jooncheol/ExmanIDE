@@ -566,12 +566,12 @@ class ProjectConfigurator(wxDialog):
 		EVT_TEXT(self, 684, self.onChangeValue)
 
 
-		self.cancel=wxButton(self,670,trans("Cancel", self.language),wxPoint(15,460))
+		self.cancel=wxButton(self.panel,670,trans("Cancel", self.language),wxPoint(15,460))
 		EVT_BUTTON(self,670,self.Cancel)
 
-		self.save=wxButton(self,671,trans("Apply", self.language),wxPoint(315,460))
+		self.save=wxButton(self.panel,671,trans("Apply", self.language),wxPoint(315,460))
 		EVT_BUTTON(self,671,self.Save)
-		self.next=wxButton(self,672,trans("OK", self.language),wxPoint(405,460))
+		self.next=wxButton(self.panel,672,trans("OK", self.language),wxPoint(405,460))
 		EVT_BUTTON(self,672,self.SaveClose)
 	
 	def onChangeValue(self, event):

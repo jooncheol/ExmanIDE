@@ -176,11 +176,12 @@ class TotalExplorer(wxTreeCtrl):
 	def GetOpenProject(self):
 		projectinfo = []
 		order = range(len(self.root_dir))
+                cookie = None
 		for x in order:
                         if x==0:
                             child, cookie = self.GetFirstChild(self.root)
                         else:
-			    child, cookie = self.GetNextChild(self.root, x)
+			    child, cookie = self.GetNextChild(self.root, cookie)
 			data=self.GetItemData(child).GetData()
 			if data[0]=="ProjectRoot":
 				projectfile = data[2]
@@ -193,11 +194,12 @@ class TotalExplorer(wxTreeCtrl):
 		projectinfo = []
 		order = range(len(self.root_dir))
                 childlist = []
+                cookie = None
 		for x in order:
                         if x==0:
                             child, cookie = self.GetFirstChild(self.root)
                         else:
-			    child, cookie = self.GetNextChild(self.root, x)
+			    child, cookie = self.GetNextChild(self.root, cookie)
                         childlist.append(child)
 		for child in childlist:
 			data=self.GetItemData(child).GetData()
@@ -395,6 +397,7 @@ class TotalExplorer(wxTreeCtrl):
 			return
 
 		deleteitem = []
+                cookie = None
 		for x in range(self.GetChildrenCount(item)):
                         if x==0:
                             child, cookie = self.GetFirstChild(self.root)
