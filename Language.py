@@ -581,6 +581,10 @@ def trans(key, Language):
 			"Korean":"바꿀 문자열",
 			"English":"Replace with",
 			},
+		"WouldYouClose": {
+			"Korean":"ExmanIDE를 종료 합니다.",
+			"English":"Close the ExmanIDE.",
+			},
 		"WouldYouUpdate": {
 			"Korean":"새 버전의 ExmanIDE가 나왔습니다.\n지금 바로 업그레이드 하시겠습니까?",
 			"English":"The new version ExmanIDE is available now.\nWould you like to upgrade now?",

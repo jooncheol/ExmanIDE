@@ -351,6 +351,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			self.UpdaterTimer.Start(3000)
 
         def setEditMenu(self):
+                return
 		self.menuEdit = wxMenu()
 		self.menuEdit.AppendSeparator()
 		self.menuEdit.Append(502, trans("Menu_Edit_Undo"), trans("Menu_Edit_Undo"))
@@ -1264,6 +1265,8 @@ class ExmanIDEFrontEnd(wxFrame):
 		if self.debugrunning==1 or self.execrunning == 1:
 			wxMessageBox(trans("DontCloseForDebug"),"Information",wxICON_INFORMATION)
 			return 
+		if wxMessageBox(trans("WouldYouClose"),"Information",wxYES_NO|wxNO_DEFAULT, self) == wxNO:
+			return
 		# udp server stop
 		self.udpth.stop()
 		# tcpp server stop
