@@ -91,5 +91,5 @@ if __name__=='__main__':
 	"""
 	logth = tcpLog()
 	logth.start()
-	#time.sleep(20)
+	time.sleep(20)
 	logth.stop()

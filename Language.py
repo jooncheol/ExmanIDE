@@ -373,6 +373,10 @@ def trans(key, Language):
 			"Korean":"사용자 정의",
 			"English":"Custom",
 			},
+		"GettingProjectFromInternet": {
+			"Korean":"인터넷에서 프로젝트 가져오기",
+			"English":"Getting Projects from Internet",
+			},
 		"ProjectSetting": {
 			"Korean":"프로젝트 설정",
 			"English":"Project Setting",
@@ -502,8 +506,8 @@ def trans(key, Language):
 			"English":"Auto Indentation",
 			},
 		"about_author": {
-			"Korean":"만든이: 박준철 (jooncheol@gmail.com)",
-			"English":"Author: Park joon cheol (jooncheol@gmail.com)",
+			"Korean":"만든이: 박준철 (exman@mizi.com)",
+			"English":"Author: Park joon cheol (exman@mizi.com)",
 			},
 		"about_license": {
 			"Korean":"라이센스: GNU GPL V2",
@@ -613,13 +617,13 @@ def trans(key, Language):
 			"Korean":"실행 명령어",
 			"English":"Command for execution",
 			},
-		"": {
-			"Korean":"",
-			"English":"",
+		"WaitForDownloadProject": {
+			"Korean":"프로젝트 템플릿을 받는동안 잠시 기다려주십시오.",
+			"English":"Wait a few minute for download  template project.",
 			},
-		"": {
-			"Korean":"",
-			"English":"",
+		"DownloadFail": {
+			"Korean":"다운로드 실패",
+			"English":"Download Fail",
 			},
 		"": {
 			"Korean":"",

@@ -3,6 +3,8 @@ import cPickle
 import os
 from Language import *
 import string
+import urllib2
+import time
 
 class Project:
 	def __init__(self, filename=None):
@@ -224,7 +226,7 @@ class ProjectNewintro(WizardPanel):
 	def view(self):
 		wxStaticBox(self,-1,trans("ProjectType", self.language),wxPoint(20,130),wxSize(200,360))
 		self.treeid = wxNewId()
-		self.tree = wxTreeCtrl(self,self.treeid, wxPoint(30, 150), wxSize(180, 330),wxTR_HIDE_ROOT)
+		self.tree = wxTreeCtrl(self,self.treeid, wxPoint(30, 150), wxSize(180, 305),wxTR_HIDE_ROOT)
 		self.root = self.tree.AddRoot(trans("Project",self.language))
 		self.tree.SetPyData(self.root, "Root")
 
@@ -235,6 +237,16 @@ class ProjectNewintro(WizardPanel):
 		EVT_TREE_SEL_CHANGED(self, self.treeid, self.onClick)
 		self.tree.SelectItem(custom)
 
+		# Getting project template from Internet
+		self.fromInternet=wxButton(self,611,trans("GettingProjectFromInternet", self.language),wxPoint(30,460),wxSize(180, 20))
+		EVT_BUTTON(self,611,self.GettingProjectFromInternet)
+
+		# use project list cache
+		cachefile = os.getenv("HOME")+"/.ExmanIDE/ExmanIDEProjectsList.txt"
+		if os.path.exists(cachefile):
+			list = open(cachefile).readlines()
+			self.FillProjectFromInternet(list)
+
 
 		wxStaticBox(self,-1,trans("ProjectSetting", self.language),wxPoint(225,130),wxSize(260,360))
 		wxStaticText(self,-1, trans("ProjectName", self.language)+" :" ,wxPoint(235,150),wxDefaultSize)
@@ -243,9 +255,12 @@ class ProjectNewintro(WizardPanel):
 
 		wxStaticText(self,-1, trans("ProjectDir", self.language)+" :" ,wxPoint(235,195),wxDefaultSize)
 		opened_dir = self.config.read_config("opened_dir")
+		if opened_dir=="" or opened_dir==None:
+			opened_dir = os.getenv("HOME")
 		if len(opened_dir)>0 and opened_dir[-1:]!=self.config.pathsep:
 			opened_dir = opened_dir + self.config.pathsep
 		self.pdir = wxTextCtrl(self, -1, opened_dir, wxPoint(235, 215), wxSize(205,20))
+		self.pdir.SetEditable(false)
 
 		png = wxImage(self.info["setup_path"]+'/images/fileopen16.png', wxBITMAP_TYPE_PNG).ConvertToBitmap()
 		wxBitmapButton(self, 630, png, wxPoint(445, 210), wxSize(png.GetWidth()+10, png.GetHeight()+10))
@@ -275,6 +290,48 @@ class ProjectNewintro(WizardPanel):
 
 		self.DisableNext()
 
+	def FillProjectFromInternet(self, list):
+		for x in list:
+
+			temp = map(string.strip, x.split("|"))
+			Path = temp[0]
+			defaultString = "N/A"
+			listString = None
+			for y in temp[1:]:
+				try:
+					language,str = y.split(":",1)
+				except:
+					return
+				if language=="English":
+					defaultString = str
+				if language == self.language:
+					listString = str
+					break
+			else:
+				listString = defaultString
+			
+			for x in range(self.tree.GetCount()):
+				child, cookie = self.tree.GetNextChild(self.root, x)
+				data = self.tree.GetItemData(child).GetData()
+				if data==Path:
+					break
+			else:
+				project = self.tree.AppendItem(self.root, listString)
+				self.tree.SetPyData(project, Path)
+				
+			
+			
+
+	def GettingProjectFromInternet(self, event):
+		url = 'http://exmanide.kldp.net/ExmanIDEProjectsList.txt'
+		try:
+			con = urllib2.urlopen(url)
+		except urllib2.URLError, str:
+			return
+		list = con.readlines()
+
+		self.FillProjectFromInternet(list)
+        
 
 	def OnOpenDir(self, event):
 		opened_dir = self.pdir.GetValue()
@@ -286,6 +343,7 @@ class ProjectNewintro(WizardPanel):
 			if len(path)>0 and path[-1:]!=self.config.pathsep:
 				path = path + self.config.pathsep
 			self.pdir.SetValue(path)
+			self.pname.SetValue("")
 		else:
 			return
 
@@ -324,6 +382,7 @@ class ProjectNewintro(WizardPanel):
 		self.info["project_author"] = self.pauthor.GetValue()
 		self.info["project_email"] = self.pemail.GetValue()
 		self.info["project_homepage"] = self.phomepage.GetValue()
+		self.info["project_template"] = self.tree.GetItemData(self.tree.GetSelection()).GetData()
 
 		self.autoNext()
 
@@ -387,6 +446,21 @@ class ProjectFinish(WizardPanel):
 		self.config.modify_config("author",self.info["project_author"])
 		self.config.modify_config("email",self.info["project_email"])
 		self.config.modify_config("homepage",self.info["project_homepage"])
+		
+		# project template from Internet
+		if self.info["project_template"] != "custom":
+			wait = wxBusyInfo(trans("WaitForDownloadProject", self.language))
+			wxYield()
+			import time
+			time.sleep(3)
+			try:
+				con = urllib2.urlopen(self.info["project_template"] )
+			except urllib2.URLError, str:
+				wxMessageBox(trans("DownloadFail", self.language),"Warning",wxICON_HAND)
+				return
+			open("/tmp/aaa.zip","wb").write( con.read())
+				
+			
 		
 		WizardPanel.Finish(self, event)
 

@@ -17,7 +17,7 @@ import thread
 
 # Backend UDP Server Associated
 from udplog import *
-wxEvt_RecvUDP=2115
+wxEvt_RecvUDP=wxNewId()
 def EVT_RECEIVEUDPSERVER(theParent, theFunc):
 	theParent.Connect(-1,-1, wxEvt_RecvUDP, theFunc)
 class RecvUDPServerMessage(wxPyEvent):
@@ -30,7 +30,7 @@ class RecvUDPServerMessage(wxPyEvent):
 
 # Backend TCP Server Associated
 from tcplog import *
-wxEvt_RecvTCP=7291
+wxEvt_RecvTCP=wxNewId()
 def EVT_RECEIVETCPSERVER(theParent, theFunc):
 	theParent.Connect(-1,-1, wxEvt_RecvTCP, theFunc)
 class RecvTCPServerMessage(wxPyEvent):
@@ -44,7 +44,7 @@ class RecvTCPServerMessage(wxPyEvent):
 
 
 # Updater Associated
-wxEvt_Updater=5082
+wxEvt_Updater=wxNewId()
 def EVT_UPDATER(theParent, theFunc):
 	theParent.Connect(-1,-1, wxEvt_Updater, theFunc)
 class UpdaterAction(wxPyEvent):
@@ -338,6 +338,7 @@ class ExmanIDEFrontEnd(wxFrame):
 		EVT_RECEIVETCPSERVER(self, self.BackendEventTCP)
 		self.tcpth = tcpLog()
 		self.tcpport = self.tcpth.port
+		wxEvt_RecvTCP=self.tcpport
 		self.tcpth.set_handler(self.tcpmessage)
 		self.tcpth.start()
 

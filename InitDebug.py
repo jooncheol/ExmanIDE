@@ -155,13 +155,13 @@ class ExmanDebug(bdb.Bdb):
 		while 1:
 			if self.localsshow!='locals_invisible':
 				localvals = cPickle.dumps(GetDebugVars(RemoveLocals(frame.f_locals)),1)
-				codes = sendmessage("SetLocals %s" % localvals)
+				codes = sendmessage("SetLocals %s" % localvals, port = self.port)
 			codes = sendmessage("GetDebugRunningCommands %s %d" % (fname,lineno), port=self.port)
 			try:
 				exec(codes)
 			except:
 				info = sys.exc_info()
-				sendmessage("Error %s:\n\n%s" % (info[0], info[1]))
+				sendmessage("Error %s:\n\n%s" % (info[0], info[1]), port = self.port)
 				continue
 
 			if nextcmd != "modify":
@@ -218,6 +218,8 @@ if __name__=='__main__':
 	if localsshow!='locals_invisible':
 		localsshow = 'locals_visible'
 	tcpport = int(sys.argv[1])
+
+
 	sys.stdin = Stdin(tcpport)
 	_raw_input = raw_input
 	_input = input
