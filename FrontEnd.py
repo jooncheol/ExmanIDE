@@ -478,8 +478,20 @@ class ExmanIDEFrontEnd(wxFrame):
 
 	def OnStdOut(self, event):
             self.profile.SetSelection(1) # stdout
+            count = self.editor.GetPageCount()
+            if count<=1:
+                return
+            selection = self.editor.GetSelection()
+            stc = self.editor.GetPage(selection)
+            stc.SetFocus()
 	def OnStdErr(self, event):
             self.profile.SetSelection(2) # stderr
+            count = self.editor.GetPageCount()
+            if count<=1:
+                return
+            selection = self.editor.GetSelection()
+            stc = self.editor.GetPage(selection)
+            stc.SetFocus()
             
 	def OnPrevSourceTab(self, event):
             count = self.editor.GetPageCount()
