@@ -108,7 +108,7 @@ class ExmanUpdaterClient:
 		while keepGoing and count < max:
 			info = self.UpdateModules[count]
 			count = count + 1
-			wxUsleep(100)
+			wxMilliSleep(100)
 			
 			clienturi = self.ClientModuleDir+'/'+info[0]
 			if info[1]=='__dir__':
@@ -131,7 +131,7 @@ class ExmanUpdaterClient:
 		while keepGoing and count < max:
 			info = self.UpdateModules[count]
 			count = count + 1
-			wxUsleep(100)
+			wxMilliSleep(100)
 			
 			clienturi = self.ClientModuleDir+'/'+info[0]
 			if info[1]!='__dir__':

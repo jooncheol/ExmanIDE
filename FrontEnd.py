@@ -115,26 +115,14 @@ class ExmanIDEFrontEnd(wxFrame):
 		self.GetRecentFiles()
 
 		self.menuFile.AppendSeparator()
+		self.menuFile.Append(110, trans("Menu_Edit_Preference"), trans("Menu_Edit_Preference"))
+
+		self.menuFile.AppendSeparator()
 		self.menuFile.Append(101, trans("Menu_File_Exit"), trans("Menu_File_Exit_Status"))
 		self.menubar.Append(self.menuFile,trans("Menu_File"))
 
 
-		self.menuEdit = wxMenu()
-		self.menuEdit.AppendSeparator()
-		self.menuEdit.Append(502, trans("Menu_Edit_Undo"), trans("Menu_Edit_Undo"))
-		self.menuEdit.Append(503, trans("Menu_Edit_Redo"), trans("Menu_Edit_Redo"))
-		self.menuEdit.AppendSeparator()
-		self.menuEdit.Append(504, trans("Menu_Edit_Cut"), trans("Menu_Edit_Cut"))
-		self.menuEdit.Append(505, trans("Menu_Edit_Copy"), trans("Menu_Edit_Copy"))
-		self.menuEdit.Append(506, trans("Menu_Edit_Paste"), trans("Menu_Edit_Paste"))
-		self.menuEdit.Append(507, trans("Menu_Edit_SelectAll"), trans("Menu_Edit_SelectAll"))
-		self.menuEdit.AppendSeparator()
-		self.menuEdit.Append(508, trans("Menu_Edit_Find"), trans("Menu_Edit_Find"))
-		self.menuEdit.Append(509, trans("Menu_Edit_Replace"), trans("Menu_Edit_Replace"))
-		self.menuEdit.Append(510, trans("Menu_Edit_Goto"), trans("Menu_Edit_Goto"))
-		self.menuEdit.AppendSeparator()
-		self.menuEdit.Append(501, trans("Menu_Edit_Preference"), trans("Menu_Edit_Preference"))
-		self.menubar.Append(self.menuEdit,trans("Menu_Edit"))
+		self.menuEdit = None
 
 
 		self.menuProject = wxMenu()
@@ -227,6 +215,11 @@ class ExmanIDEFrontEnd(wxFrame):
 			self.menuSignal.AppendMenu(wxNewId(), "More", submenu)
 			self.menubar.Append(self.menuSignal,trans("Signal"))
 		
+		self.menuView = wxMenu()
+		self.menuView.Append(801, trans("Menu_View_Prev"), trans("Menu_View_Prev"))
+		self.menuView.Append(802, trans("Menu_View_Next"), trans("Menu_View_Next"))
+		self.menubar.Append(self.menuView,trans("Menu_View"))
+
 		self.menuHelp = wxMenu()
 		self.menuHelp.Append(904, trans("Menu_Help_Homepage"), trans("Menu_Help_Homepage"))
 		self.menuHelp.Append(903, trans("Menu_Help_BugIdea"), trans("Menu_Help_BugIdea"))
@@ -263,8 +256,9 @@ class ExmanIDEFrontEnd(wxFrame):
 		EVT_MENU(self, 106, self.OnFileSaveAs)
 		EVT_MENU(self, 107, self.OnFileProjectNew)
 		EVT_MENU(self, 108, self.OnFileDirectoryOpen)
-		EVT_MENU(self, 108, self.OnFileProjectAddNewFile)
+		#EVT_MENU(self, 108, self.OnFileProjectAddNewFile)
 		EVT_MENU(self, 109, self.OnFileProjectConfigurator)
+		EVT_MENU(self, 110, self.OnPreference)
 		EVT_MENU(self, 201, self.OnExecute)
 		EVT_MENU(self, 202, self.OnExecuteStop)
 		EVT_MENU(self, 301, self.OnDebug)
@@ -272,8 +266,9 @@ class ExmanIDEFrontEnd(wxFrame):
 		EVT_MENU(self, 303, self.OnDebugNext)
 		EVT_MENU(self, 304, self.OnDebugStep)
 		EVT_MENU(self, 305, self.OnDebugArgument)
-		EVT_MENU(self, 501, self.OnPreference)
 		EVT_MENU(self, 901, self.OnAbout)
+		EVT_MENU(self, 801, self.OnPrevSourceTab)
+		EVT_MENU(self, 802, self.OnNextSourceTab)
 		EVT_MENU(self, 902, self.OnUpdaterTimerEvent)
 		EVT_MENU(self, 903, self.SubmitBug)
 		EVT_MENU(self, 904, self.Homepage)
@@ -301,6 +296,8 @@ class ExmanIDEFrontEnd(wxFrame):
 		# Splitter
 		self.horizontal=wxSplitterWindow(self,-1)
 		self.vertical=wxSplitterWindow(self.horizontal,-1)
+		self.horizontal.SetMinimumPaneSize(3)
+		self.vertical.SetMinimumPaneSize(3)
 
 		self.explorer=TotalExplorer(self.vertical,self.config,self)
 		self.editor=MultipleEditor(self.vertical,self.config,self)
@@ -309,8 +306,6 @@ class ExmanIDEFrontEnd(wxFrame):
 		self.horizontal.SplitHorizontally(self.vertical,self.profile, int(self.config.read_config("horizontal_sashposition")))
 		self.vertical.SplitVertically(self.explorer,self.editor, int(self.config.read_config("vertical_sashposition")))
 
-		self.horizontal.SetMinimumPaneSize(3)
-		self.vertical.SetMinimumPaneSize(3)
 
 		self.explorer.set_dclick_handler(self.editor.AddFile)
 
@@ -354,6 +349,22 @@ class ExmanIDEFrontEnd(wxFrame):
 			self.UpdaterTimer = wxTimer(self, ID_Timer)
 			EVT_TIMER(self, ID_Timer, self.OnUpdaterTimerEvent)
 			self.UpdaterTimer.Start(3000)
+
+        def setEditMenu(self):
+		self.menuEdit = wxMenu()
+		self.menuEdit.AppendSeparator()
+		self.menuEdit.Append(502, trans("Menu_Edit_Undo"), trans("Menu_Edit_Undo"))
+		self.menuEdit.Append(503, trans("Menu_Edit_Redo"), trans("Menu_Edit_Redo"))
+		self.menuEdit.AppendSeparator()
+		self.menuEdit.Append(504, trans("Menu_Edit_Cut"), trans("Menu_Edit_Cut"))
+		self.menuEdit.Append(505, trans("Menu_Edit_Copy"), trans("Menu_Edit_Copy"))
+		self.menuEdit.Append(506, trans("Menu_Edit_Paste"), trans("Menu_Edit_Paste"))
+		self.menuEdit.Append(507, trans("Menu_Edit_SelectAll"), trans("Menu_Edit_SelectAll"))
+		self.menuEdit.AppendSeparator()
+		self.menuEdit.Append(508, trans("Menu_Edit_Find"), trans("Menu_Edit_Find"))
+		self.menuEdit.Append(509, trans("Menu_Edit_Replace"), trans("Menu_Edit_Replace"))
+		self.menuEdit.Append(510, trans("Menu_Edit_Goto"), trans("Menu_Edit_Goto"))
+		self.menubar.Append(self.menuEdit,trans("Menu_Edit"))
 
 	def Homepage(self, event):
 		language = self.config.read_config("default_language")
@@ -414,6 +425,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			wxMessageBox(trans("NoSelectedFile"),"Warning",wxICON_HAND)
 			return
 		stc = self.editor.GetPage(selection)
+                if stc.Type()=="Vim": return
 		if eid==502:
 			stc.Undo()
 		elif eid==503:
@@ -459,6 +471,36 @@ class ExmanIDEFrontEnd(wxFrame):
 		dialog.Centre(wxBOTH)
 		dialog.ShowModal()
 
+	def OnPrevSourceTab(self, event):
+            count = self.editor.GetPageCount()
+            if count<=1:
+                return
+            selection = self.editor.GetSelection()
+            currStc = self.editor.GetPage(selection)
+            firstStc = self.editor.GetPage(0) 
+            lastStc = self.editor.GetPage(count-1) 
+            if firstStc==currStc:
+                self.editor.SetSelection(count-1)
+                lastStc.SetFocus()
+                return
+            self.editor.SetSelection(selection-1)
+            stc = self.editor.GetPage(selection-1)
+            stc.SetFocus()
+	def OnNextSourceTab(self, event):
+            count = self.editor.GetPageCount()
+            if count<=1:
+                return
+            selection = self.editor.GetSelection()
+            currStc = self.editor.GetPage(selection)
+            firstStc = self.editor.GetPage(0) 
+            lastStc = self.editor.GetPage(count-1) 
+            if lastStc==currStc:
+                self.editor.SetSelection(0)
+                firstStc.SetFocus()
+                return
+            self.editor.SetSelection(selection+1)
+            stc = self.editor.GetPage(selection+1)
+            stc.SetFocus()
 	def OnAbout(self, event):
 		dialog = AboutDialog(self, self.config, self)
 		dialog.Centre(wxBOTH)
@@ -500,8 +542,8 @@ class ExmanIDEFrontEnd(wxFrame):
 		if opened_dir=="":
 			opened_dir=DEFAULTDIR
 
-		dlg = wxDirDialog(self, "Choose a Project directory", defaultPath=opened_dir, style=wxDD_DEFAULT_STYLE|wxDD_NEW_DIR_BUTTON)
-		if dlg.ShowModal() == wxID_OK:
+		dlg = wxDirDialog(self, "Choose a Project directory", defaultPath=opened_dir, style=wx.DD_DEFAULT_STYLE|wx.DD_NEW_DIR_BUTTON)
+		if dlg.ShowModal() == wx.ID_OK:
 			path = dlg.GetPath()
 			self.config.modify_config("opened_dir",path)
 			dlg.Destroy()
@@ -670,6 +712,7 @@ class ExmanIDEFrontEnd(wxFrame):
 				for y in range(self.editor.GetPageCount()-1, -1, -1):
 					if filename== self.editor.openedfiles[y][1]:
 						stc = self.editor.GetPage(y)
+                                                if stc.Type()=="Vim": return
 						for z in x[2]:
 							stc.MarkerAdd(z-1 , 0)
 		self.SetRecentProject(path)
@@ -707,6 +750,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			wxMessageBox(trans("NoSelectedFile"),"Warning",wxICON_HAND)
 			return
 		stc = self.editor.GetPage(selection)
+                if stc.Type()=="Vim": return
 		for x in range(self.editor.GetPageCount()):
 			if stc == self.editor.GetPage(x):
 				if self.editor.openedfiles[x][1]=="":
@@ -721,6 +765,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			wxMessageBox(trans("NoSelectedFile"),"Warning",wxICON_HAND)
 			return
 		stc = self.editor.GetPage(selection)
+                if stc.Type()=="Vim": return
 		for x in range(self.editor.GetPageCount()):
 			if stc == self.editor.GetPage(x):
 				self.editor.SaveAs(stc)
@@ -742,7 +787,7 @@ class ExmanIDEFrontEnd(wxFrame):
 		if opened_dir=="":
 			opened_dir=DEFAULTDIR
 
-		dlg = wxFileDialog(self, "Choose a file", opened_dir, "", wildcard, wxOPEN|wxMULTIPLE)
+		dlg = wxFileDialog(self, message="Choose a file", defaultDir=opened_dir, defaultFile="", wildcard=wildcard, style=wxOPEN|wxMULTIPLE)
 		if dlg.ShowModal() == wxID_OK:
 			for path in dlg.GetPaths():
 				self.editor.AddFile(path)
@@ -808,6 +853,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			self.editor.AddFile(currentfile)
 			selection = self.editor.GetSelection()
 			stc = self.editor.GetPage(selection)
+                        if stc.Type()=="Vim": return
 
 			if array[3:] and array[3]=="end":
 				stc.MarkerDelete(currentline-1,2)
@@ -845,7 +891,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			wxPostEvent(self,evt)
 			del evt
 			while self.tcpreturn==None:
-				wxUsleep(200)
+				wxMilliSleep(200)
 				if self.tcpreturn!=None:
 					break
 			ret = self.tcpreturn
@@ -859,6 +905,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			code = "breakpoints = []"
 			for x in range(self.editor.GetPageCount()):
 				stc = self.editor.GetPage(x)
+                                if stc.Type()=="Vim": continue;
 				filename = self.editor.openedfiles[x][1]
 
 				lineno = 0
@@ -881,7 +928,7 @@ class ExmanIDEFrontEnd(wxFrame):
 
 			code = "nextcmd = ''"
 			while self.tcpreturn==None:
-				wxUsleep(200)
+				wxMilliSleep(200)
 				if self.tcpreturn!=None:
 					break
 			ret = self.tcpreturn
@@ -894,6 +941,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			code = "breakpoints = []"
 			for x in range(self.editor.GetPageCount()):
 				stc = self.editor.GetPage(x)
+                                if stc.Type()=="Vim": continue
 				filename = self.editor.openedfiles[x][1]
 
 				lineno = 0
@@ -912,7 +960,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			wxPostEvent(self,evt)
 			del evt
 			while self.tcpreturn==None:
-				wxUsleep(200)
+				wxMilliSleep(200)
 				if self.tcpreturn!=None:
 					break
 			return self.tcpreturn
@@ -921,7 +969,7 @@ class ExmanIDEFrontEnd(wxFrame):
 			wxPostEvent(self,evt)
 			del evt
 			while self.tcpreturn==None:
-				wxUsleep(200)
+				wxMilliSleep(200)
 				if self.tcpreturn!=None:
 					break
 			return self.tcpreturn
@@ -965,7 +1013,6 @@ class ExmanIDEFrontEnd(wxFrame):
 			execcommand=''
 			
 		ext = getext.getext(filename).lower()
-		# 파이썬이 아니면 모두 실행모드
 		if ext not in ["py","pyw"] and type=="debug":
 			type="execute"
 			
@@ -1020,6 +1067,10 @@ class ExmanIDEFrontEnd(wxFrame):
 			self.execrunning = 1
 		else:
 			self.debugrunning = 1
+
+                selection = self.editor.GetSelection()
+                stc = self.editor.GetPage(selection)
+                stc.SetFocus()
 
 
 	def OnExecute(self, event):
@@ -1135,6 +1186,9 @@ class ExmanIDEFrontEnd(wxFrame):
 		#win32/scripts/killProcName.py
 		if wxPlatform == '__WXGTK__':
 			os.kill(self.debug_pid, signal.SIGTERM)
+                selection = self.editor.GetSelection()
+                stc = self.editor.GetPage(selection)
+                stc.SetFocus()
 		"""
 		if self.debugrunning == 1:
 			self.process.CloseOutput()
@@ -1191,12 +1245,16 @@ class ExmanIDEFrontEnd(wxFrame):
 
 		for x in range(self.editor.GetPageCount()):
 			stc = self.editor.GetPage(x)
+                        if stc.Type()=="Vim": continue
 			filename = self.editor.openedfiles[x][1]
 			stc.MarkerDeleteAll(2)
 
 		if self.config.read_config("locals_not_show")!='1':
 			self.profile.locals.DeleteAllItems()
 			self.profile.locals.InitRoot()
+                selection = self.editor.GetSelection()
+                stc = self.editor.GetPage(selection)
+                stc.SetFocus()
 
 	def OnCloseWindow(self,event):
 		if self.debugrunning==1 or self.execrunning == 1:
@@ -1211,17 +1269,25 @@ class ExmanIDEFrontEnd(wxFrame):
 			if self.editor.runningapitank==0:
 				break
 			else:
-				wxUsleep(200)
+				wxMilliSleep(200)
 
 
 		# project close
 		order = range(len(self.explorer.root_dir))
-		order.reverse()
+                cookie = 0
+                childlist = []
 		for x in order:
-			child, cookie = self.explorer.GetNextChild(self.explorer.root, x)
-			data=self.explorer.GetItemData(child).GetData()
-			if data[0]=="ProjectRoot":
-				self.explorer.ProjectClose(child, data)
+                    if x==0:
+                        child, cookie = self.explorer.GetFirstChild(self.explorer.root)
+                    else: 
+                        child, cookie = self.explorer.GetNextChild(self.explorer.root, cookie)
+                    childlist.append(child)
+
+                childlist.reverse()
+		for child in childlist:
+                    data=self.explorer.GetItemData(child).GetData()
+                    if data[0]=="ProjectRoot":
+                            self.explorer.ProjectClose(child, data)
 
 		# modify file check
 		for x in range(self.editor.GetPageCount()-1, -1, -1):

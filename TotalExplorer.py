@@ -2,6 +2,7 @@ from wxPython.wx import *
 from BackEnd import *
 from Language import *
 from Project import *
+from SourceEditor import *
 
 import os.path
 import dircache
@@ -131,8 +132,29 @@ class TotalExplorer(wxTreeCtrl):
 
 			self.PopupMenu(menu, wxPoint(event.GetX(), event.GetY()))
 			menu.Destroy()
+                elif data[0]=='file':
+                        self.openwithfilename = data[3]
+			menu = wxMenu()
+                        menuitem = wxMenuItem(menu, 2029,trans("Menu_File_OpenWithScintilla",self.language))
+                        menu.AppendItem(menuitem)
+                        EVT_MENU(self, 2029, self.onOpenWith)
+                        try:
+                            from wx.vim import *
+                            menuitem = wxMenuItem(menu, 2030,trans("Menu_File_OpenWithVim",self.language))
+                            menu.AppendItem(menuitem)
+                            EVT_MENU(self, 2030, self.onOpenWith)
+                        except:
+                            pass
+
+			self.PopupMenu(menu, wxPoint(event.GetX(), event.GetY()))
+			menu.Destroy()
 
 		event.Skip()
+        def onOpenWith(self, event):
+                if event.GetId()==2029:
+                    self.main.editor.AddFile(self.openwithfilename, editor="Scintilla")
+                elif event.GetId()==2030:
+                    self.main.editor.AddFile(self.openwithfilename, editor="Vim")
 	
 	def onProjectConfigurator(self, event):
 		item = self.GetSelection()
@@ -155,7 +177,10 @@ class TotalExplorer(wxTreeCtrl):
 		projectinfo = []
 		order = range(len(self.root_dir))
 		for x in order:
-			child, cookie = self.GetNextChild(self.root, x)
+                        if x==0:
+                            child, cookie = self.GetFirstChild(self.root)
+                        else:
+			    child, cookie = self.GetNextChild(self.root, x)
 			data=self.GetItemData(child).GetData()
 			if data[0]=="ProjectRoot":
 				projectfile = data[2]
@@ -167,9 +192,14 @@ class TotalExplorer(wxTreeCtrl):
 		self.Show(false)
 		projectinfo = []
 		order = range(len(self.root_dir))
-		order.reverse()
+                childlist = []
 		for x in order:
-			child, cookie = self.GetNextChild(self.root, x)
+                        if x==0:
+                            child, cookie = self.GetFirstChild(self.root)
+                        else:
+			    child, cookie = self.GetNextChild(self.root, x)
+                        childlist.append(child)
+		for child in childlist:
 			data=self.GetItemData(child).GetData()
 			if data[0]=="ProjectRoot":
 				projectfile = data[2]
@@ -366,7 +396,10 @@ class TotalExplorer(wxTreeCtrl):
 
 		deleteitem = []
 		for x in range(self.GetChildrenCount(item)):
-			child, cookie = self.GetNextChild(item, x)
+                        if x==0:
+                            child, cookie = self.GetFirstChild(self.root)
+                        else:
+                            child, cookie = self.GetNextChild(item, cookie)
 			deleteitem.append(child)
 		for x in deleteitem:
 			self.Delete(x)

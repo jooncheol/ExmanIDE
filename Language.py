@@ -73,6 +73,14 @@ def trans(key, Language):
 			"Korean":"새 파일 추가",
 			"English":"Add New File",
 			},
+		"Menu_File_OpenWithVim": {
+			"Korean":"Vim 에디터로 열기",
+			"English":"Open with Vim",
+			},
+		"Menu_File_OpenWithScintilla": {
+			"Korean":"Scintilla 에디터로 열기",
+			"English":"Open with Scintilla",
+			},
 		"Menu_Edit": {
 			"Korean":"편집",
 			"English":"Edit",
@@ -119,7 +127,7 @@ def trans(key, Language):
 			},
 		"Menu_Build": {
 			"Korean":"빌드(&B)",
-			"English":"&Debug",
+			"English":"&Build",
 			},
 		"Menu_Build_Compile": {
 			"Korean":"컴파일\tF7",
@@ -156,6 +164,18 @@ def trans(key, Language):
 		"Menu_Debug_Arguments": {
 			"Korean":"아규먼트 설정...",
 			"English":"Arguments...",
+			},
+		"Menu_View_Prev": {
+			"Korean":"이전 소스 탭\tCtrl-PgUp",
+			"English":"Previous source tab\tCtrl-PgUp",
+			},
+		"Menu_View_Next": {
+			"Korean":"다음 소스 탭\tCtrl-PgDn",
+			"English":"Next source tab\tCtrl-PgDn",
+			},
+		"Menu_View": {
+			"Korean":"뷰(&V)",
+			"English":"&View",
 			},
 		"Menu_Help_About": {
 			"Korean":"ExmanIDE 대하여",
@@ -434,8 +454,8 @@ def trans(key, Language):
 			"English":"Common",
 			},
 		"Env_Editor": {
-			"Korean":"에디터",
-			"English":"Editor",
+			"Korean":"에디터 (Scintilla)",
+			"English":"Editor (Scintilla)",
 			},
 		"Env_Debugger": {
 			"Korean":"디버거",
@@ -506,8 +526,8 @@ def trans(key, Language):
 			"English":"Auto Indentation",
 			},
 		"about_author": {
-			"Korean":"만든이: 박준철 (exman@mizi.com)",
-			"English":"Author: Park joon cheol (exman@mizi.com)",
+			"Korean":"만든이: 박준철 (jooncheol<at>gmail.com)",
+			"English":"Author: Joon-cheol Park (jooncheol<at>gmail.com)",
 			},
 		"about_license": {
 			"Korean":"라이센스: GNU GPL V2",
@@ -519,7 +539,7 @@ def trans(key, Language):
 			},
 		"about_version": {
 			"Korean":"ExmanIDE 버전: ",
-						   "English":"ExmanIDE Version: ",
+                        "English":"ExmanIDE Version: ",
 			},
 		"find_text": {
 			"Korean":"찾을 문자열",
@@ -625,9 +645,13 @@ def trans(key, Language):
 			"Korean":"다운로드 실패",
 			"English":"Download Fail",
 			},
-		"": {
-			"Korean":"",
-			"English":"",
+		"StartingGVim": {
+			"Korean":"GVim 구동중...",
+			"English":"Starting GVim...",
+			},
+		"FileOpenByGVim": {
+			"Korean":"GVim으로 파일 여는중...",
+			"English":"Opening the file by GVim...",
 			},
 		"": {
 			"Korean":"",
@@ -635,7 +659,7 @@ def trans(key, Language):
 			},
 	}
 	try:
-		str = translate[key][Language]
+		str = unicode(translate[key][Language], "utf-8")
 	except KeyError:
 		str = "***"
 	return str

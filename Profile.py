@@ -3,7 +3,7 @@ from BackEnd import *
 from Language import *
 
 from SourceEditor import DescriptText, stderrText, crustShell
-from wxPython.lib.PyCrust import version
+from wx.py import version
 import types
 import pprint
 
@@ -162,7 +162,10 @@ Value = %s
 
 		deleteitem = []
 		for x in range(self.GetChildrenCount(item)):
-			child, cookie = self.GetNextChild(item, x)
+                        if x==0:
+                            child, cookie = self.GetFirstChild(item)
+                        else:
+                            child, cookie = self.GetNextChild(item, cookie)
 			deleteitem.append(child)
 		for x in deleteitem:
 			self.Delete(x)

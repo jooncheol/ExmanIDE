@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 from wxPython.wx import *
-from wxPython.lib.splashscreen import *
 from FrontEnd import *
 from BackEnd import *
 from Language import *
@@ -40,11 +39,11 @@ def StartingWork(main):
 	return main.window
 
 
-class MySplashScreen(wxSplashScreen):
+class MySplashScreen(wx.SplashScreen):
 	def __init__(self, main):
 		png = wxImage(DEFAULTDIR+"/images/splash.png", wxBITMAP_TYPE_PNG).ConvertToBitmap()
-		wxSplashScreen.__init__(self, png,
-								wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
+		wx.SplashScreen.__init__(self, png,
+								wx.SPLASH_CENTRE_ON_SCREEN|wx.SPLASH_TIMEOUT,
 								1500, None, -1,
 								style = wxSIMPLE_BORDER|wxFRAME_NO_TASKBAR|wxSTAY_ON_TOP)
 		self.main = main

@@ -385,11 +385,11 @@ class Environment(wxDialog):
 
 
 
-		self.prev=wxButton(self,2410,trans("OK", self.language),wxPoint(330,470))
+		self.prev=wxButton(self.panel,2410,trans("OK", self.language),wxPoint(330,470))
 		EVT_BUTTON(self,2410,self.DoOk)
-		self.prev=wxButton(self,2411,trans("Apply", self.language),wxPoint(415,470))
+		self.prev=wxButton(self.panel,2411,trans("Apply", self.language),wxPoint(415,470))
 		EVT_BUTTON(self,2411,self.DoApply)
-		self.prev=wxButton(self,2412,trans("Cancel", self.language),wxPoint(500,470))
+		self.prev=wxButton(self.panel,2412,trans("Cancel", self.language),wxPoint(500,470))
 		EVT_BUTTON(self,2412,self.Cancel)
 
 		self.currentBody = self.left.GetItemData(default).GetData()
@@ -413,9 +413,12 @@ class Environment(wxDialog):
 
 	def DoApply(self,event):
 		for x in range(self.left.GetChildrenCount(self.root)):
-			item, cookie = self.left.GetNextChild(self.root, x)
-			data=self.left.GetItemData(item).GetData()
-			data.SetEnv()
+                    if x==0:
+                        item, cookie = self.left.GetFirstChild(self.root)
+                    else:
+			item, cookie = self.left.GetNextChild(self.root, cookie)
+                    data=self.left.GetItemData(item).GetData()
+                    data.SetEnv()
 
 	def Cancel(self,event):
 		self.EndModal(1)

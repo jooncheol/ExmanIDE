@@ -29,7 +29,7 @@ class AboutDialog(wxDialog):
 		wxStaticText(self.panel , -1 , trans("about_license",self.language), wxPoint(20, 225))
 		wxStaticText(self.panel , -1 , trans("about_thankto",self.language), wxPoint(20, 245))
 
-		self.prev=wxButton(self,2412,trans("OK", self.language),wxPoint(310,270))
+		self.prev=wxButton(self.panel,2412,trans("OK", self.language),wxPoint(310,270))
 		EVT_BUTTON(self,2412,self.Cancel)
 
 

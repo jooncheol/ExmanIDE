@@ -4,7 +4,7 @@ import keyword, string
 
 def stcstyle(stc,config,type="NULL"):
 	stc.StyleClearAll()
-	stc.SetCodePage(1)
+	#stc.SetCodePage(1)
 
 	language = config.read_config("default_language")
 	font = config.read_config("font_string")

@@ -302,16 +302,23 @@ class ProjectNewintro(WizardPanel):
 					language,str = y.split(":",1)
 				except:
 					return
+
 				if language=="English":
 					defaultString = str
+                                """ # FIXME
 				if language == self.language:
 					listString = str
 					break
+                                """
 			else:
 				listString = defaultString
 			
+                        cookie = 0
 			for x in range(self.tree.GetCount()):
-				child, cookie = self.tree.GetNextChild(self.root, x)
+                                if x==0:
+                                    child, cookie = self.tree.GetFirstChild(self.root)
+                                else:
+                                    child, cookie = self.tree.GetNextChild(self.root, cookie)
 				data = self.tree.GetItemData(child).GetData()
 				if data==Path:
 					break

@@ -200,10 +200,8 @@ class ExmanDebug(bdb.Bdb):
 		self.GetDebugRunningCommands(frame) 
 
 	def user_return(self, frame, retval):
-		#print '=== 리턴', retval
 		self.GetDebugRunningCommands(frame) 
 	def user_exception(self, frame, exc_stuff):
-		#print '=== 익셉션', exc_stuff
 		self.set_continue()
 
 

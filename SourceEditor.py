@@ -5,14 +5,16 @@ from Language import *
 
 from threading import *
 
-from wxPython.stc import *
-from wxPython.lib.PyCrust import shell
+from wx.stc import *
+from wx.py import shell
 from StcStyle import *
 import keyword
 import os
 import string
 import time
 import getext
+
+DEFAULTDIR = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 class DescriptText(wxStyledTextCtrl):
 	def __init__(self,parent,config,main):
@@ -613,122 +615,275 @@ class PythonSTC(wxStyledTextCtrl):
 		return line
 
 class SourceEditor(PythonSTC):
-	def __init__(self,parent,config,main):
-		#########################################################
-		self.parent=parent
-		self.config=config
-		self.main=main
-		PythonSTC.__init__(self,self.parent,wxNewId())
-		self.language = self.config.read_config("default_language")
+    def __init__(self,parent,config,main):
+            #########################################################
+            self.parent=parent
+            self.config=config
+            self.main=main
+            PythonSTC.__init__(self,self.parent,wxNewId())
+            self.language = self.config.read_config("default_language")
 
 
-		self.SetMarginType(0, wxSTC_MARGIN_NUMBER)
-		self.SetMarginSensitive(0, true)
-		self.SetMarginWidth(0, 30)
+            self.SetMarginType(0, wxSTC_MARGIN_NUMBER)
+            self.SetMarginSensitive(0, true)
+            self.SetMarginWidth(0, 30)
 
-		self.SetMarginType(1, wxSTC_MARGIN_SYMBOL)
-		self.SetMarginSensitive(1, true)
-		self.SetMarginWidth(1, 15)
+            self.SetMarginType(1, wxSTC_MARGIN_SYMBOL)
+            self.SetMarginSensitive(1, true)
+            self.SetMarginWidth(1, 15)
 
-		self.SetMarginType(2, wxSTC_MARGIN_SYMBOL)
-		self.SetMarginMask(2, wxSTC_MASK_FOLDERS)
-		self.SetMarginSensitive(2, true)
-		self.SetMarginWidth(2, 12)
+            self.SetMarginType(2, wxSTC_MARGIN_SYMBOL)
+            self.SetMarginMask(2, wxSTC_MASK_FOLDERS)
+            self.SetMarginSensitive(2, true)
+            self.SetMarginWidth(2, 12)
 
-		self.MarkerDefine(0, wxSTC_MARK_ROUNDRECT, "#CCFF00", "RED")
-		self.MarkerDefine(1, wxSTC_MARK_CIRCLE, "FOREST GREEN", "SIENNA")
-		self.MarkerDefine(2, wxSTC_MARK_SHORTARROW, "blue", "blue")
-		self.MarkerDefine(3, wxSTC_MARK_ARROW, "#00FF00", "#00FF00")
-		self.MarkerDefine(4, wxSTC_MARK_ARROWDOWN, "black", "green")
+            self.MarkerDefine(0, wxSTC_MARK_ROUNDRECT, "#CCFF00", "RED")
+            self.MarkerDefine(1, wxSTC_MARK_CIRCLE, "FOREST GREEN", "SIENNA")
+            self.MarkerDefine(2, wxSTC_MARK_SHORTARROW, "blue", "blue")
+            self.MarkerDefine(3, wxSTC_MARK_ARROW, "#00FF00", "#00FF00")
+            self.MarkerDefine(4, wxSTC_MARK_ARROWDOWN, "black", "green")
 
-		self.SetPosInfoHandler(self.SetPosStatus)
+            self.SetPosInfoHandler(self.SetPosStatus)
 
-		# view option
-		opt=self.config.read_config("view_witespace")
-		if opt==None: opt=0
-		self.SetViewWhiteSpace(int(opt));
+            # view option
+            opt=self.config.read_config("view_witespace")
+            if opt==None: opt=0
+            self.SetViewWhiteSpace(int(opt));
 
-		opt=self.config.read_config("view_endofline")
-		if opt==None: opt=0
-		self.SetViewEOL(int(opt));
+            opt=self.config.read_config("view_endofline")
+            if opt==None: opt=0
+            self.SetViewEOL(int(opt));
 
-		opt=self.config.read_config("view_indentationguide")
-		if opt==None: opt=0
-		self.SetIndentationGuides(int(opt))
+            opt=self.config.read_config("view_indentationguide")
+            if opt==None: opt=0
+            self.SetIndentationGuides(int(opt))
 
-		opt=self.config.read_config("view_linenumber")
-		if opt==None: opt=1
-		if int(opt)==0:
-			self.SetMarginWidth(0, 0)
+            opt=self.config.read_config("view_linenumber")
+            if opt==None: opt=1
+            if int(opt)==0:
+                    self.SetMarginWidth(0, 0)
 
-		opt=self.config.read_config("view_margin")
-		if opt==None: opt=1
-		if int(opt)==0:
-			self.SetMarginWidth(1, 0)
+            opt=self.config.read_config("view_margin")
+            if opt==None: opt=1
+            if int(opt)==0:
+                    self.SetMarginWidth(1, 0)
 
-		opt=self.config.read_config("view_foldmargin")
-		if opt==None: opt=1
-		if int(opt)==0:
-			self.SetMarginWidth(2, 0)
+            opt=self.config.read_config("view_foldmargin")
+            if opt==None: opt=1
+            if int(opt)==0:
+                    self.SetMarginWidth(2, 0)
 
-		opt=self.config.read_config("view_autoindent")
-		if opt==None: opt=1
-		self.autoindent=int(opt)
+            opt=self.config.read_config("view_autoindent")
+            if opt==None: opt=1
+            self.autoindent=int(opt)
 
-		opt=self.config.read_config("view_usetabs")
-		if opt==None: opt=1
-		self.SetUseTabs(int(opt))
+            opt=self.config.read_config("view_usetabs")
+            if opt==None: opt=1
+            self.SetUseTabs(int(opt))
 
-		opt=self.config.read_config("view_tabsize")
-		if opt==None: opt=0
-		self.SetIndent(int(opt))
-
-
-
-	def SetPosStatus(self, overtype, line, column):
-		if overtype==1:
-			self.main.SetStatusText("Over type", 1)
-		else:
-			self.main.SetStatusText("Insert", 1)
+            opt=self.config.read_config("view_tabsize")
+            if opt==None: opt=0
+            self.SetIndent(int(opt))
 
 
-		self.main.SetStatusText("Line: %d Col: %d" % (line, column), 2)
+    def Type(self):
+            return "Scintilla"
 
-	def Find(self):
-		wizard = SearchDialog(self.main, self.config, self.main, self)
-		self.wizard = wizard
-		wizard.Centre(wxBOTH)
-		wizard.ShowModal()
+    def SetPosStatus(self, overtype, line, column):
+            if overtype==1:
+                    self.main.SetStatusText("Over type", 1)
+            else:
+                    self.main.SetStatusText("Insert", 1)
 
-	def Replace(self):
-		wizard = SearchDialog(self.main, self.config, self.main, self, "Replace")
-		self.wizard = wizard
-		wizard.Centre(wxBOTH)
-		wizard.ShowModal()
-	
 
-	def Open(self, filename, readonly=0):
-		self.SetLexType(filename)
-		try:
-			self.SetText(open(filename,"r").read())
-		except IOError:
-			pass
-		self.EmptyUndoBuffer()
-		self.Colourise(0, -1)
-		self.SetReadOnly(readonly)
+            self.main.SetStatusText("Line: %d Col: %d" % (line, column), 2)
 
-		
+    def Find(self):
+            wizard = SearchDialog(self.main, self.config, self.main, self)
+            self.wizard = wizard
+            wizard.Centre(wxBOTH)
+            wizard.ShowModal()
 
-	def SetLexType(self, filename):
-		ext = getext.getext(filename).lower()
-		if ext in ["py","pyw"]:
-			self.SetStyles("PYTHON")
-		elif ext in ["php","php4","php3","phtml"]:
-			self.SetStyles("PHP")
-		elif ext in ["c","cc","cpp","cxx","cs","h","hh","hpp","hxx","sma","moc","c++"]:
-			self.SetStyles("CPP")
-		else:
-			self.SetStyles("NULL")
+    def Replace(self):
+            wizard = SearchDialog(self.main, self.config, self.main, self, "Replace")
+            self.wizard = wizard
+            wizard.Centre(wxBOTH)
+            wizard.ShowModal()
+    
+
+    def Open(self, filename, readonly=0):
+            self.SetLexType(filename)
+            try:
+                    self.SetText(open(filename,"r").read())
+            except IOError:
+                    pass
+            self.EmptyUndoBuffer()
+            self.Colourise(0, -1)
+            self.SetReadOnly(readonly)
+
+            
+
+    def SetLexType(self, filename):
+            ext = getext.getext(filename).lower()
+            if ext in ["py","pyw"]:
+                    self.SetStyles("PYTHON")
+            elif ext in ["php","php4","php3","phtml"]:
+                    self.SetStyles("PHP")
+            elif ext in ["c","cc","cpp","cxx","cs","h","hh","hpp","hxx","sma","moc","c++"]:
+                    self.SetStyles("CPP")
+            else:
+                    self.SetStyles("NULL")
+    def Quit(self):
+        pass
+try:
+    from wx.vim import *
+    class SourceEditorVim(wxPanel):
+        def __init__(self,parent,config,main):
+            self.parent=parent
+            self.config=config
+            self.main=main
+            wxPanel.__init__(self, parent, wxNewId(), wxDefaultPosition, self.parent.GetSize())
+            self.language = self.config.read_config("default_language")
+            wxVim.SetOptionStr("-U %s" % DEFAULTDIR+"/vimrc")
+            busy = wx.BusyInfo(trans("StartingGVim", self.language))
+            wx.Yield()
+            self.vim = wxVim(self, wxNewId(), wxDefaultPosition, self.GetSize())
+            self.servername = self.vim.GetServerName()
+            EVT_SIZE(self, self.OnSize)
+            EVT_VIM_PLUG_ADDED(self, self.OnPlugAdded)
+            EVT_VIM_PLUG_REMOVED(self, self.OnPlugRemoved)
+            EVT_KEY_DOWN(self, self.OnKeyPressed)
+            EVT_SET_FOCUS(self, self.OnFocus)
+        def OnFocus(self, event):
+            self.vim.SetFocus()
+        def OnKeyPressed(self, event):
+            key = event.KeyCode()
+            debug("KeyPressed: %d" % key)
+            if key == 87 and event.ControlDown():
+                # ctrl-w is Closing
+                self.GetParent().CloseFile(self)
+            elif key == 9 and event.ControlDown() and not event.ShiftDown():
+                # Ctrl-Tab
+                debug("Ctrl-tab")
+
+                if self.parent.old_ctrltab_ctrlup==1:
+                        self.parent.SetSelection(self.parent.old_ctrltab_selection)
+                        self.parent.old_ctrltab_stc.SetFocus()
+                        count = self.parent.GetPageCount()
+                        for x in range(count):
+                                stc = self.parent.GetPage(x)
+                                if stc==self:
+                                        self.parent.old_ctrltab_stc = self
+                                        self.parent.old_ctrltab_selection = x
+                                        break
+                        self.parent.old_ctrltab_ctrlup = 0
+                        event.Skip()
+                        return
+                else:
+                        self.parent.old_ctrltab_ctrlup = 0
+
+                count = self.parent.GetPageCount()
+                for x in range(count):
+                        stc = self.parent.GetPage(x)
+                        if stc==self:
+                                if x+1 == count:
+                                        selection = 0
+                                else:
+                                        selection = x+1
+                                self.parent.SetSelection(selection)
+                                nextstc=self.parent.GetPage(selection)
+                                nextstc.SetFocus()
+                                self.parent.old_ctrltab_stc = self
+                                self.parent.old_ctrltab_selection = x
+                                break
+
+            elif key == 9 and event.ControlDown() and event.ShiftDown():
+                # Ctrl-Tab
+                debug("Ctrl-Shift-tab")
+
+                if self.parent.old_ctrltab_ctrlup==1:
+                        self.parent.SetSelection(self.parent.old_ctrltab_selection)
+                        self.parent.old_ctrltab_stc.SetFocus()
+                        count = self.parent.GetPageCount()
+                        for x in range(count):
+                                stc = self.parent.GetPage(x)
+                                if stc==self:
+                                        self.parent.old_ctrltab_stc = self
+                                        self.parent.old_ctrltab_selection = x
+                                        break
+                        self.parent.old_ctrltab_ctrlup = 0
+                        event.Skip()
+                        return
+                else:
+                        self.parent.old_ctrltab_ctrlup = 0
+
+                count = self.parent.GetPageCount()
+                for x in range(count):
+                        stc = self.parent.GetPage(x)
+                        if stc==self:
+                                if x == 0:
+                                        selection = count-1
+                                else:
+                                        selection = x-1
+                                self.parent.SetSelection(selection)
+                                nextstc=self.parent.GetPage(selection)
+                                nextstc.SetFocus()
+                                self.parent.old_ctrltab_stc = self
+                                self.parent.old_ctrltab_selection = x
+                                break 
+            event.Skip()
+        def OnPlugAdded(self, event):
+            print "Added"
+        def OnPlugRemoved(self, event):
+            print "Removed"
+            self.GetParent().CloseFile(self)
+        def OnSize(self, event):
+            print "OnSize", event.GetSize()
+            size = event.GetSize()
+            self.SetSize(size)
+            self.vim.SetSize(size)
+	def Type(self):
+        	return "Vim"
+        def SetLexType(self, filename):
+            pass
+        def SetSavePoint(self):
+            pass
+        def Open(self, filename, readonly=0):
+            busy = wx.BusyInfo(trans("FileOpenByGVim", self.language))
+            wx.Yield()
+            time.sleep(1)
+            os.system("gvim --servername %s --remote %s" % (self.servername, filename))
+            os.system("gvim --servername %s --remote-send '<Esc>:cd %s<Return>'" % (self.servername, os.path.dirname(filename)))
+            self.vim.SetFocus()
+        def Quit(self):
+            os.system("gvim --servername %s --remote-send '<Esc>:q!'" % (self.servername))
+        def GotoLine(self, line):
+            os.system("gvim --servername %s --remote-send '<Esc>:%d<Return>'" % (self.servername, line+1))
+        def SetText(self, str):
+            pass
+	def ScrollToLine(self, line):
+            self.GotoLine(line)
+        def SetSelectionStart(self, line):
+            pass
+        def SetSelectionEnd(self, line):
+            pass
+        def PositionFromLine(self, lineno):
+            pass
+        def GetLineEndPosition(self, line):
+            pass
+        def MarkerNext(self, lineno, flag):
+            return -1
+        def GetFirstVisibleLine(self):
+            return 1
+        def LineFromPosition(self, pos):
+            return 1
+        def GetCurrentPos(self):
+            return 1,1
+        def GetModify(self):
+            return False
+except:
+    SourceEditorVim = SourceEditor
+    pass
 
 class MultipleEditor(wxNotebook):	
 	def __init__(self,parent,config,main):
@@ -837,7 +992,7 @@ class MultipleEditor(wxNotebook):
 		self.SetSelection(selection)
 
 
-	def AddFile(self, filename, argument="", firstvisible=0, currentline=0, extdata=None):
+	def AddFile(self, filename, argument="", firstvisible=0, currentline=0, extdata=None, editor="Scintilla"):
 		if os.path.exists(filename)==0:
 			return 0
 		same = 0
@@ -850,7 +1005,10 @@ class MultipleEditor(wxNotebook):
 				
 		self.main.SetRecentFile(os.path.abspath(filename))
 		
-		editor = SourceEditor(self, self.config, self.main)
+                if editor=="Scintilla":
+                    editor = SourceEditor(self, self.config, self.main)
+                elif editor=="Vim":
+                    editor = SourceEditorVim(self, self.config, self.main)
 		if same==0:
 			sametxt = ""
 		else:
@@ -910,6 +1068,7 @@ class MultipleEditor(wxNotebook):
 				filename = self.openedfiles[x][1]
 				debug("Close File: "+filename)
 				del self.openedfiles[x]
+                                stc.Quit()
 				self.RemovePage(x)
 				del stc
 				wxTheClipboard.Flush()
