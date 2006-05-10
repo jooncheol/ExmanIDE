@@ -355,7 +355,6 @@ class ExmanIDEFrontEnd(wxFrame):
 			self.UpdaterTimer.Start(3000)
 
         def setEditMenu(self):
-                return
 		self.menuEdit = wxMenu()
 		self.menuEdit.AppendSeparator()
 		self.menuEdit.Append(502, trans("Menu_Edit_Undo"), trans("Menu_Edit_Undo"))

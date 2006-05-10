@@ -1178,10 +1178,10 @@ class MultipleEditor(wxNotebook):
 
 		editor = self.GetPage(selectedIndex)
                 if editor.Type()=="Vim":
-		    if self.main.menubar.GetMenu(1).GetTitle()==trans("Menu_Edit", self.language):
+		    if unicode(self.main.menubar.GetMenu(1).GetTitle(), "utf-8")==trans("Menu_Edit", self.language):
                         self.main.menubar.Remove(1)
                 else:
-		    if self.main.menubar.GetMenu(1).GetTitle()!=trans("Menu_Edit", self.language):
+		    if unicode(self.main.menubar.GetMenu(1).GetTitle(), "utf-8")!=trans("Menu_Edit", self.language):
                         self.main.setEditMenu()
 
 class SearchDialog(wxDialog):

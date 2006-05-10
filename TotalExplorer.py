@@ -8,6 +8,11 @@ import os.path
 import dircache
 import explorericon
 import getext
+try:
+    from wx.vim import *
+    SUPPORT_VIM = False
+except:
+    SUPPORT_VIM = False
 
 
 class TotalExplorer(wxTreeCtrl):
@@ -132,29 +137,26 @@ class TotalExplorer(wxTreeCtrl):
 
 			self.PopupMenu(menu, wxPoint(event.GetX(), event.GetY()))
 			menu.Destroy()
-                elif data[0]=='file':
-                        self.openwithfilename = data[3]
+		elif data[0]=='file':
+			self.openwithfilename = data[3]
 			menu = wxMenu()
-                        menuitem = wxMenuItem(menu, 2029,trans("Menu_File_OpenWithScintilla",self.language))
-                        menu.AppendItem(menuitem)
-                        EVT_MENU(self, 2029, self.onOpenWith)
-                        try:
-                            from wx.vim import *
-                            menuitem = wxMenuItem(menu, 2030,trans("Menu_File_OpenWithVim",self.language))
-                            menu.AppendItem(menuitem)
-                            EVT_MENU(self, 2030, self.onOpenWith)
-                        except:
-                            pass
+			menuitem = wxMenuItem(menu, 2029,trans("Menu_File_OpenWithScintilla",self.language))
+			menu.AppendItem(menuitem)
+			EVT_MENU(self, 2029, self.onOpenWith)
+			if SUPPORT_VIM:
+			    menuitem = wxMenuItem(menu, 2030,trans("Menu_File_OpenWithVim",self.language))
+			    menu.AppendItem(menuitem)
+			    EVT_MENU(self, 2030, self.onOpenWith)
 
 			self.PopupMenu(menu, wxPoint(event.GetX(), event.GetY()))
 			menu.Destroy()
 
 		event.Skip()
-        def onOpenWith(self, event):
-                if event.GetId()==2029:
-                    self.main.editor.AddFile(self.openwithfilename, editor="Scintilla")
-                elif event.GetId()==2030:
-                    self.main.editor.AddFile(self.openwithfilename, editor="Vim")
+	def onOpenWith(self, event):
+		if event.GetId()==2029:
+		    self.main.editor.AddFile(self.openwithfilename, editor="Scintilla")
+		elif event.GetId()==2030:
+		    self.main.editor.AddFile(self.openwithfilename, editor="Vim")
 	
 	def onProjectConfigurator(self, event):
 		item = self.GetSelection()
@@ -176,11 +178,11 @@ class TotalExplorer(wxTreeCtrl):
 	def GetOpenProject(self):
 		projectinfo = []
 		order = range(len(self.root_dir))
-                cookie = None
+		cookie = None
 		for x in order:
-                        if x==0:
-                            child, cookie = self.GetFirstChild(self.root)
-                        else:
+			if x==0:
+			    child, cookie = self.GetFirstChild(self.root)
+			else:
 			    child, cookie = self.GetNextChild(self.root, cookie)
 			data=self.GetItemData(child).GetData()
 			if data[0]=="ProjectRoot":
@@ -193,14 +195,14 @@ class TotalExplorer(wxTreeCtrl):
 		self.Show(false)
 		projectinfo = []
 		order = range(len(self.root_dir))
-                childlist = []
-                cookie = None
+		childlist = []
+		cookie = None
 		for x in order:
-                        if x==0:
-                            child, cookie = self.GetFirstChild(self.root)
-                        else:
+			if x==0:
+			    child, cookie = self.GetFirstChild(self.root)
+			else:
 			    child, cookie = self.GetNextChild(self.root, cookie)
-                        childlist.append(child)
+			childlist.append(child)
 		for child in childlist:
 			data=self.GetItemData(child).GetData()
 			if data[0]=="ProjectRoot":
@@ -397,14 +399,14 @@ class TotalExplorer(wxTreeCtrl):
 			return
 
 		deleteitem = []
-                cookie = None
+		cookie = None
+		if self.GetChildrenCount(item)>0:
+                    return
 		for x in range(self.GetChildrenCount(item)):
-                        if x==0:
-                            child, cookie = self.GetFirstChild(self.root)
-                        else:
-                            child, cookie = self.GetNextChild(item, cookie)
-			deleteitem.append(child)
-		for x in deleteitem:
-			self.Delete(x)
+			if x==0:
+			    child, cookie = self.GetFirstChild(self.root)
+			else:
+			    child, cookie = self.GetNextChild(item, cookie)
+			self.Delete(child)
 
 		self.create(data[1], data[3], data[5])
