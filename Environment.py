@@ -230,8 +230,7 @@ class EditorEnv(PanelEnv):
         top = 280; sep=25
         wxStaticText(self, wxNewId(), trans("font_setting",self.language)+" :", wxPoint(20, top+(sep*2)))
         opt = self.config.read_config("font_string")
-        if opt==None and self.language=='Korean': opt = 'gothic,times'
-        elif opt==None: opt='times'
+        if opt==None: opt='Monospace'
         self.font_setting = wxTextCtrl(self, wxNewId() , opt, wxPoint(90, top+(sep*2)-3), wxSize(120,20))
 
         wxStaticText(self, wxNewId(), trans("font_size",self.language)+" :", wxPoint(20, top+(sep*3)))
@@ -303,10 +302,7 @@ class EditorEnv(PanelEnv):
         opt=self.font_setting.GetValue()
         opt2=self.font_size.GetValue()
         if opt.strip()=='':
-            if self.language=='Korean': 
-                opt = 'gothic,times'
-            else: 
-                opt='times'
+            opt='Monospace'
         a=self.config.modify_config("font_string",'%s' % opt)
         a=self.config.modify_config("font_size",'%d' % int(opt2))
         

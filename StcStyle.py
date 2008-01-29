@@ -9,10 +9,8 @@ def stcstyle(stc,config,type="NULL"):
 
     language = config.read_config("default_language")
     font = config.read_config("font_string")
-    if font==None and language=='Korean': 
-        font = 'gothic,times'
-    elif font==None:
-        font='times'
+    if font==None:
+        font='Monospace'
     font = font.replace(",","|")
     size = config.read_config("font_size")
     if size==None:
