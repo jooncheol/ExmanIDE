@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 ####
 # Copyright 2000,2001 by Timothy O'Malley <timo@alum.mit.edu>
@@ -422,3 +423,9 @@ if not hasattr(socket, "_no_timeoutsocket"):
 del socket
 socket = timeoutsocket
 # Finis
+
+
+
+"""
+vim600: sw=4 ts=8 sts=4 et bs=2 fdm=marker fileencoding=utf8 encoding=utf8
+"""

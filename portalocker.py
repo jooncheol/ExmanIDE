@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # portalocker.py - Cross-platform (posix/nt) API for flock-style file locking.
 #                  Requires python 1.5.2 or better.
 
@@ -39,51 +40,57 @@ Version: $Id$
 import os
 
 if os.name == 'nt':
-	import win32con
-	import win32file
-	import pywintypes
-	LOCK_EX = win32con.LOCKFILE_EXCLUSIVE_LOCK
-	LOCK_SH = 0 # the default
-	LOCK_NB = win32con.LOCKFILE_FAIL_IMMEDIATELY
-	# is there any reason not to reuse the following structure?
-	__overlapped = pywintypes.OVERLAPPED()
+    import win32con
+    import win32file
+    import pywintypes
+    LOCK_EX = win32con.LOCKFILE_EXCLUSIVE_LOCK
+    LOCK_SH = 0 # the default
+    LOCK_NB = win32con.LOCKFILE_FAIL_IMMEDIATELY
+    # is there any reason not to reuse the following structure?
+    __overlapped = pywintypes.OVERLAPPED()
 elif os.name == 'posix':
-	import fcntl
-	LOCK_EX = fcntl.LOCK_EX
-	LOCK_SH = fcntl.LOCK_SH
-	LOCK_NB = fcntl.LOCK_NB
+    import fcntl
+    LOCK_EX = fcntl.LOCK_EX
+    LOCK_SH = fcntl.LOCK_SH
+    LOCK_NB = fcntl.LOCK_NB
 else:
-	raise RuntimeError("PortaLocker only defined for nt and posix platforms")
+    raise RuntimeError("PortaLocker only defined for nt and posix platforms")
 
 if os.name == 'nt':
-	def lock(file, flags):
-		hfile = win32file._get_osfhandle(file.fileno())
-		win32file.LockFileEx(hfile, flags, 0, 0xffff0000, __overlapped)
+    def lock(file, flags):
+        hfile = win32file._get_osfhandle(file.fileno())
+        win32file.LockFileEx(hfile, flags, 0, 0xffff0000, __overlapped)
 
-	def unlock(file):
-		hfile = win32file._get_osfhandle(file.fileno())
-		win32file.UnlockFileEx(hfile, 0, 0xffff0000, __overlapped)
+    def unlock(file):
+        hfile = win32file._get_osfhandle(file.fileno())
+        win32file.UnlockFileEx(hfile, 0, 0xffff0000, __overlapped)
 
 elif os.name =='posix':
-	def lock(file, flags):
-		fcntl.flock(file.fileno(), flags)
+    def lock(file, flags):
+        fcntl.flock(file.fileno(), flags)
 
-	def unlock(file):
-		fcntl.flock(file.fileno(), fcntl.LOCK_UN)
+    def unlock(file):
+        fcntl.flock(file.fileno(), fcntl.LOCK_UN)
 
 if __name__ == '__main__':
-	from time import time, strftime, localtime
-	import sys
-	import portalocker
+    from time import time, strftime, localtime
+    import sys
+    import portalocker
 
-	log = open('log.txt', "a+")
-	portalocker.lock(log, portalocker.LOCK_EX)
+    log = open('log.txt', "a+")
+    portalocker.lock(log, portalocker.LOCK_EX)
 
-	timestamp = strftime("%m/%d/%Y %H:%M:%S\n", localtime(time()))
-	log.write( timestamp )
+    timestamp = strftime("%m/%d/%Y %H:%M:%S\n", localtime(time()))
+    log.write( timestamp )
 
-	print "Wrote lines. Hit enter to release lock."
-	dummy = sys.stdin.readline()
+    print "Wrote lines. Hit enter to release lock."
+    dummy = sys.stdin.readline()
 
-	log.close()
+    log.close()
 
+
+
+
+"""
+vim600: sw=4 ts=8 sts=4 et bs=2 fdm=marker fileencoding=utf8 encoding=utf8
+"""

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def safesend(sock,pack,size):
     left=size
     cur=0
@@ -29,7 +30,7 @@ def saferecv(sock,size,debug=0):
             percent = float(get) / size * 100
             print "\rDownload: ", get, " / ", size, "(%2.2f%%)" % percent,
     if debug>0:
-		print 
+        print 
     return cur
 
 def saferecv_fp(sock,size,fp,debug=0):
@@ -50,5 +51,11 @@ def saferecv_fp(sock,size,fp,debug=0):
             percent = float(get) / size * 100
             print "\rDownload: ", get, " / ", size, "(%2.2f%%)" % percent,
     if debug>0:
-		print 
+        print 
     return None
+
+
+
+"""
+vim600: sw=4 ts=8 sts=4 et bs=2 fdm=marker fileencoding=utf8 encoding=utf8
+"""

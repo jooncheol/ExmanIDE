@@ -1,81 +1,82 @@
+# -*- coding: utf-8 -*-
 from wxPython.wx import *
 from wxPython.stc import *
 import keyword, string
 
 def stcstyle(stc,config,type="NULL"):
-	stc.StyleClearAll()
-	#stc.SetCodePage(1)
+    stc.StyleClearAll()
+    #stc.SetCodePage(1)
 
-	language = config.read_config("default_language")
-	font = config.read_config("font_string")
-	if font==None and language=='Korean': 
-		font = 'gothic,times'
-	elif font==None:
-		font='times'
-	font = font.replace(",","|")
-	size = config.read_config("font_size")
-	if size==None:
-		size=12
-	else:
-		size=int(size)
-		
-	# Global default styles for all languages
-	stc.StyleSetSpec(wxSTC_STYLE_DEFAULT,	 "face:%s,size:%d" % (font, size))
-	stc.StyleSetSpec(wxSTC_STYLE_LINENUMBER,  "back:#C0C0C0,face:%s,size:%d" % (font, size))
-	stc.StyleSetSpec(wxSTC_STYLE_CONTROLCHAR, "face:%s" % font)
-	stc.StyleSetSpec(wxSTC_STYLE_BRACELIGHT,  "fore:#FFFFFF,back:#0000FF,bold")
-	stc.StyleSetSpec(wxSTC_STYLE_BRACELIGHT,  "fore:#FFFFFF,back:#0000FF,bold")
-	stc.StyleSetSpec(wxSTC_STYLE_BRACEBAD,	"fore:#000000,back:#FF0000,bold")
+    language = config.read_config("default_language")
+    font = config.read_config("font_string")
+    if font==None and language=='Korean': 
+        font = 'gothic,times'
+    elif font==None:
+        font='times'
+    font = font.replace(",","|")
+    size = config.read_config("font_size")
+    if size==None:
+        size=12
+    else:
+        size=int(size)
+        
+    # Global default styles for all languages
+    stc.StyleSetSpec(wxSTC_STYLE_DEFAULT,     "face:%s,size:%d" % (font, size))
+    stc.StyleSetSpec(wxSTC_STYLE_LINENUMBER,  "back:#C0C0C0,face:%s,size:%d" % (font, size))
+    stc.StyleSetSpec(wxSTC_STYLE_CONTROLCHAR, "face:%s" % font)
+    stc.StyleSetSpec(wxSTC_STYLE_BRACELIGHT,  "fore:#FFFFFF,back:#0000FF,bold")
+    stc.StyleSetSpec(wxSTC_STYLE_BRACELIGHT,  "fore:#FFFFFF,back:#0000FF,bold")
+    stc.StyleSetSpec(wxSTC_STYLE_BRACEBAD,    "fore:#000000,back:#FF0000,bold")
 
 
-	font_base="font:%s,size:%d" % (font, size)
-	font_small="font:%s,size:%d" % (font, size)
-	font_comment="font:%s,size:%d" % (font, size)
-	font_code_comment_box=font_comment
-	font_code_comment_line=font_comment
-	font_code_comment_doc=font_comment
-	font_text="font:%s,size:%d" % (font, size)
-	font_text_comment="font:%s,size:%d" % (font, size)
-	font_embedded_base="font:%s,size:%d" % (font, size)
-	font_embedded_comment="font:%s,size:%d" % (font, size)
-	font_monospace="font:%s,size:%d" % (font, size)
-	colour_code_comment_box="fore:#007F00"
-	colour_code_comment_line="fore:#007F00"
-	colour_code_comment_doc="fore:#3F703F"
-	colour_text_comment="fore:#0000FF,back:#D0F0D0"
-	colour_other_comment="fore:#007F00"
-	colour_embedded_comment="back:#E0EEFF"
-	colour_embedded_js="back:#F0F0FF"
-	colour_notused="back:#FF0000"
-	colour_number="fore:#007F7F"
-	colour_keyword="fore:#00007F"
-	colour_string="fore:#7F007F"
-	colour_char="fore:#7F007F"
-	colour_operator="fore:#000000"
-	colour_preproc="fore:#7F7F00"
-	colour_error="fore:#FFFF00,back:#FF0000"
+    font_base="font:%s,size:%d" % (font, size)
+    font_small="font:%s,size:%d" % (font, size)
+    font_comment="font:%s,size:%d" % (font, size)
+    font_code_comment_box=font_comment
+    font_code_comment_line=font_comment
+    font_code_comment_doc=font_comment
+    font_text="font:%s,size:%d" % (font, size)
+    font_text_comment="font:%s,size:%d" % (font, size)
+    font_embedded_base="font:%s,size:%d" % (font, size)
+    font_embedded_comment="font:%s,size:%d" % (font, size)
+    font_monospace="font:%s,size:%d" % (font, size)
+    colour_code_comment_box="fore:#007F00"
+    colour_code_comment_line="fore:#007F00"
+    colour_code_comment_doc="fore:#3F703F"
+    colour_text_comment="fore:#0000FF,back:#D0F0D0"
+    colour_other_comment="fore:#007F00"
+    colour_embedded_comment="back:#E0EEFF"
+    colour_embedded_js="back:#F0F0FF"
+    colour_notused="back:#FF0000"
+    colour_number="fore:#007F7F"
+    colour_keyword="fore:#00007F"
+    colour_string="fore:#7F007F"
+    colour_char="fore:#7F007F"
+    colour_operator="fore:#000000"
+    colour_preproc="fore:#7F7F00"
+    colour_error="fore:#FFFF00,back:#FF0000"
 
-	if type=="PYTHON":
-		stc.SetLexer(wxSTC_LEX_PYTHON)
-		stc.SetKeyWords(0, string.join(keyword.kwlist))
-		
-		stc.StyleSetSpec(wxSTC_P_DEFAULT, "fore:#808080,face:%s,size:%d" % (font, size))
-		stc.StyleSetSpec(wxSTC_P_COMMENTLINE, "fore:#007F00,face:%s,size:%d" % (font, size))
-		stc.StyleSetSpec(wxSTC_P_NUMBER, "fore:#007F7F,size:%d" % size)
-		stc.StyleSetSpec(wxSTC_P_STRING, "fore:#7F007F,face:%s,size:%d" % (font, size))
-		stc.StyleSetSpec(wxSTC_P_CHARACTER, "fore:#7F007F,face:%s,size:%d" % (font, size))
-		stc.StyleSetSpec(wxSTC_P_WORD, "fore:#00007F,bold,size:%d" % size)
-		stc.StyleSetSpec(wxSTC_P_TRIPLE, "fore:#7F0000,size:%d" % size)
-		stc.StyleSetSpec(wxSTC_P_TRIPLEDOUBLE, "fore:#7F0000,size:%d" % size)
-		stc.StyleSetSpec(wxSTC_P_CLASSNAME, "fore:#0000FF,bold,underline,size:%d" % size)
-		stc.StyleSetSpec(wxSTC_P_DEFNAME, "fore:#007F7F,bold,size:%d" % size)
-		stc.StyleSetSpec(wxSTC_P_OPERATOR, "bold,size:%d" % size)
-		stc.StyleSetSpec(wxSTC_P_IDENTIFIER, "fore:#808080,face:%s,size:%d" % (font, size))
-		stc.StyleSetSpec(wxSTC_P_COMMENTBLOCK, "fore:#7F7F7F,size:%d" % size)
-		stc.StyleSetSpec(wxSTC_P_STRINGEOL, "fore:#000000,face:%s,back:#EOC0E0,eolfilled,size:%d" % (font, size))
-	elif type=="PHP":
-		stc.SetLexer(wxSTC_LEX_PHP)
-		stc.SetKeyWords(0,"and argv as argc endwhile \
+    if type=="PYTHON":
+        stc.SetLexer(wxSTC_LEX_PYTHON)
+        stc.SetKeyWords(0, string.join(keyword.kwlist))
+        
+        stc.StyleSetSpec(wxSTC_P_DEFAULT, "fore:#808080,face:%s,size:%d" % (font, size))
+        stc.StyleSetSpec(wxSTC_P_COMMENTLINE, "fore:#007F00,face:%s,size:%d" % (font, size))
+        stc.StyleSetSpec(wxSTC_P_NUMBER, "fore:#007F7F,size:%d" % size)
+        stc.StyleSetSpec(wxSTC_P_STRING, "fore:#7F007F,face:%s,size:%d" % (font, size))
+        stc.StyleSetSpec(wxSTC_P_CHARACTER, "fore:#7F007F,face:%s,size:%d" % (font, size))
+        stc.StyleSetSpec(wxSTC_P_WORD, "fore:#00007F,bold,size:%d" % size)
+        stc.StyleSetSpec(wxSTC_P_TRIPLE, "fore:#7F0000,size:%d" % size)
+        stc.StyleSetSpec(wxSTC_P_TRIPLEDOUBLE, "fore:#7F0000,size:%d" % size)
+        stc.StyleSetSpec(wxSTC_P_CLASSNAME, "fore:#0000FF,bold,underline,size:%d" % size)
+        stc.StyleSetSpec(wxSTC_P_DEFNAME, "fore:#007F7F,bold,size:%d" % size)
+        stc.StyleSetSpec(wxSTC_P_OPERATOR, "bold,size:%d" % size)
+        stc.StyleSetSpec(wxSTC_P_IDENTIFIER, "fore:#808080,face:%s,size:%d" % (font, size))
+        stc.StyleSetSpec(wxSTC_P_COMMENTBLOCK, "fore:#7F7F7F,size:%d" % size)
+        stc.StyleSetSpec(wxSTC_P_STRINGEOL, "fore:#000000,face:%s,back:#EOC0E0,eolfilled,size:%d" % (font, size))
+    elif type=="PHP":
+        stc.SetLexer(wxSTC_LEX_PHP)
+        stc.SetKeyWords(0,"and argv as argc endwhile \
 for break continue if else elseif endif do while return switch \
 case function class new static define \
 __LINE__ __FILE__ PHP_VERSION PHP_OS TRUE FALSE E_ERROR \
@@ -83,54 +84,54 @@ E_ALL E_WARNING E_PARSE E_NOTICE HTTP_COOKIE_VARS HTTP_GET_VARS HTTP_POST_VARS \
 HTTP_POST_FILES HTTP_ENV_VARS HTTP_SERVER_VARS PHP_OS PHP_SELF PHP_VERSION \
 int integer real double float string array object var")
 
-		stc.StyleSetSpec(wxSTC_HPHP_DEFAULT, "back:#FFF8F8,eolfilled")
-		stc.StyleSetSpec(wxSTC_HPHP_HSTRING, "fore:#E8C100,"+font_monospace+",back:#FFF8F8")
-		stc.StyleSetSpec(wxSTC_HPHP_SIMPLESTRING, "fore:#E8C100,"+font_monospace+",back:#FFF8F8")
-		stc.StyleSetSpec(wxSTC_HPHP_WORD, "fore:#00007F,bold,back:#FFF8F8")
-		stc.StyleSetSpec(wxSTC_HPHP_NUMBER, "fore:#007F00,"+font_monospace+",back:#FFF8F8")
-		stc.StyleSetSpec(wxSTC_HPHP_VARIABLE, "back:#FFF8F8")
-		stc.StyleSetSpec(wxSTC_HPHP_COMMENT, "fore:#FF0000,"+font_comment+",back:#FFF8F8")
-		stc.StyleSetSpec(wxSTC_HPHP_COMMENTLINE, "fore:#FF0000,"+font_comment+",back:#FFF8F8")
-		stc.StyleSetSpec(wxSTC_HPHP_HSTRING_VARIABLE, "back:#FFF8F8,eolfilled")
-		stc.StyleSetSpec(wxSTC_HPHP_OPERATOR, "fore:#000000,back:#FFF8F8")
-	elif type=="CPP":
-		stc.SetLexer(wxSTC_LEX_CPP)
-		stc.SetKeyWords(0,"asm auto bool break case catch char class const const_cast continue \
+        stc.StyleSetSpec(wxSTC_HPHP_DEFAULT, "back:#FFF8F8,eolfilled")
+        stc.StyleSetSpec(wxSTC_HPHP_HSTRING, "fore:#E8C100,"+font_monospace+",back:#FFF8F8")
+        stc.StyleSetSpec(wxSTC_HPHP_SIMPLESTRING, "fore:#E8C100,"+font_monospace+",back:#FFF8F8")
+        stc.StyleSetSpec(wxSTC_HPHP_WORD, "fore:#00007F,bold,back:#FFF8F8")
+        stc.StyleSetSpec(wxSTC_HPHP_NUMBER, "fore:#007F00,"+font_monospace+",back:#FFF8F8")
+        stc.StyleSetSpec(wxSTC_HPHP_VARIABLE, "back:#FFF8F8")
+        stc.StyleSetSpec(wxSTC_HPHP_COMMENT, "fore:#FF0000,"+font_comment+",back:#FFF8F8")
+        stc.StyleSetSpec(wxSTC_HPHP_COMMENTLINE, "fore:#FF0000,"+font_comment+",back:#FFF8F8")
+        stc.StyleSetSpec(wxSTC_HPHP_HSTRING_VARIABLE, "back:#FFF8F8,eolfilled")
+        stc.StyleSetSpec(wxSTC_HPHP_OPERATOR, "fore:#000000,back:#FFF8F8")
+    elif type=="CPP":
+        stc.SetLexer(wxSTC_LEX_CPP)
+        stc.SetKeyWords(0,"asm auto bool break case catch char class const const_cast continue \
 default delete do double dynamic_cast else enum explicit export extern false float for \
 friend goto if inline int long mutable namespace new operator private protected public \
 register reinterpret_cast return short signed sizeof static static_cast struct switch \
 template this throw true try typedef typeid typename union unsigned using \
 virtual void volatile wchar_t while")
 
-		stc.StyleSetSpec(wxSTC_C_DEFAULT,"fore:#808080")
-		stc.StyleSetSpec(wxSTC_C_COMMENT,colour_code_comment_box+","+font_code_comment_box)
-		stc.StyleSetSpec(wxSTC_C_COMMENTLINE,colour_code_comment_line+","+font_code_comment_line)
-		stc.StyleSetSpec(wxSTC_C_COMMENTDOC,colour_code_comment_doc+","+font_code_comment_doc)
-		stc.StyleSetSpec(wxSTC_C_NUMBER,colour_number)
-		stc.StyleSetSpec(wxSTC_C_WORD,colour_keyword+",bold")
-		stc.StyleSetSpec(wxSTC_C_STRING,colour_string)
-		stc.StyleSetSpec(wxSTC_C_CHARACTER,colour_char)
-		stc.StyleSetSpec(wxSTC_C_UUID,"fore:#804080")
-		stc.StyleSetSpec(wxSTC_C_PREPROCESSOR,colour_preproc)
-		stc.StyleSetSpec(wxSTC_C_OPERATOR,colour_operator+",bold")
-		stc.StyleSetSpec(wxSTC_C_IDENTIFIER,"")
-		stc.StyleSetSpec(wxSTC_C_STRINGEOL,"fore:#000000,"+font_monospace+",back:#E0C0E0,eolfilled")
-		stc.StyleSetSpec(wxSTC_C_VERBATIM,"fore:#007F00,"+font_monospace+",back:#E0FFE0,eolfilled")
-		stc.StyleSetSpec(wxSTC_C_REGEX,"fore:#3F7F3F,"+font_monospace+",back:#E0F0FF,eolfilled")
-		stc.StyleSetSpec(wxSTC_C_COMMENTLINEDOC,colour_code_comment_doc+","+font_code_comment_doc)
-		stc.StyleSetSpec(wxSTC_C_WORD2,"fore:#B00040")
-		stc.StyleSetSpec(wxSTC_C_COMMENTDOCKEYWORD,"fore:#3060A0,"+font_code_comment_doc)
-		stc.StyleSetSpec(wxSTC_C_COMMENTDOCKEYWORDERROR,"fore:#804020,"+font_code_comment_doc)
-		
-	else:
-		stc.SetLexer(wxSTC_LEX_NULL)
-	
-	# refresh style
-	"""
-	stc.SetScrollWidth(stc.GetScrollWidth())
-	stc.SetUseHorizontalScrollBar(True)
-	stc.SetEndAtLastLine(1)
-	"""
+        stc.StyleSetSpec(wxSTC_C_DEFAULT,"fore:#808080")
+        stc.StyleSetSpec(wxSTC_C_COMMENT,colour_code_comment_box+","+font_code_comment_box)
+        stc.StyleSetSpec(wxSTC_C_COMMENTLINE,colour_code_comment_line+","+font_code_comment_line)
+        stc.StyleSetSpec(wxSTC_C_COMMENTDOC,colour_code_comment_doc+","+font_code_comment_doc)
+        stc.StyleSetSpec(wxSTC_C_NUMBER,colour_number)
+        stc.StyleSetSpec(wxSTC_C_WORD,colour_keyword+",bold")
+        stc.StyleSetSpec(wxSTC_C_STRING,colour_string)
+        stc.StyleSetSpec(wxSTC_C_CHARACTER,colour_char)
+        stc.StyleSetSpec(wxSTC_C_UUID,"fore:#804080")
+        stc.StyleSetSpec(wxSTC_C_PREPROCESSOR,colour_preproc)
+        stc.StyleSetSpec(wxSTC_C_OPERATOR,colour_operator+",bold")
+        stc.StyleSetSpec(wxSTC_C_IDENTIFIER,"")
+        stc.StyleSetSpec(wxSTC_C_STRINGEOL,"fore:#000000,"+font_monospace+",back:#E0C0E0,eolfilled")
+        stc.StyleSetSpec(wxSTC_C_VERBATIM,"fore:#007F00,"+font_monospace+",back:#E0FFE0,eolfilled")
+        stc.StyleSetSpec(wxSTC_C_REGEX,"fore:#3F7F3F,"+font_monospace+",back:#E0F0FF,eolfilled")
+        stc.StyleSetSpec(wxSTC_C_COMMENTLINEDOC,colour_code_comment_doc+","+font_code_comment_doc)
+        stc.StyleSetSpec(wxSTC_C_WORD2,"fore:#B00040")
+        stc.StyleSetSpec(wxSTC_C_COMMENTDOCKEYWORD,"fore:#3060A0,"+font_code_comment_doc)
+        stc.StyleSetSpec(wxSTC_C_COMMENTDOCKEYWORDERROR,"fore:#804020,"+font_code_comment_doc)
+        
+    else:
+        stc.SetLexer(wxSTC_LEX_NULL)
+    
+    # refresh style
+    """
+    stc.SetScrollWidth(stc.GetScrollWidth())
+    stc.SetUseHorizontalScrollBar(True)
+    stc.SetEndAtLastLine(1)
+    """
 
 """
 
@@ -492,4 +493,10 @@ virtual void volatile wchar_t while")
 #define wxSTC_SCRIPTOL_COMMENTDOCKEYWORD 17
 #define wxSTC_SCRIPTOL_COMMENTDOCKEYWORDERROR 18
 #define wxSTC_SCRIPTOL_COMMENTBASIC 19
+"""
+
+
+
+"""
+vim600: sw=4 ts=8 sts=4 et bs=2 fdm=marker fileencoding=utf8 encoding=utf8
 """
