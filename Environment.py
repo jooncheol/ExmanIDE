@@ -34,7 +34,7 @@ class MyValidator(wxPyValidator):
                     return false
         return true
     def OnChar(self, event):
-        key = event.KeyCode()
+        key = event.KeyCode
         if key < WXK_SPACE or key == WXK_DELETE or key > 255:
             event.Skip()
             return
