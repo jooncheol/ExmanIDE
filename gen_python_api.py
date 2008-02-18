@@ -296,33 +296,33 @@ apis = {'unknown':{},}
 for x in apikeys:
     temp = x.split(" ",1)
     if len(temp)==2:
-    mname = temp[0]
-    param = temp[1]
+        mname = temp[0]
+        param = temp[1]
     else:
-    mname = temp[0]
-    param = ''
+        mname = temp[0]
+        param = ''
     if mname.find(".")==-1:
-    apis['unknown'][mname]={'__myvalue__':api[x],}
+        apis['unknown'][mname]={'__myvalue__':api[x],}
     mnames = mname.split(".")
     vname=''
     for y in mnames:
-    if len(vname)==0:
-        vname='apis["'+y+'"]'
-    else:
-        vname=vname+'["'+y+'"]'
-    try:
-        exec vname
-    except:
-        exec vname+'={}'
+        if len(vname)==0:
+            vname='apis["'+y+'"]'
+        else:
+            vname=vname+'["'+y+'"]'
+        try:
+            exec vname
+        except:
+            exec vname+'={}'
 
     if api[x].replace("\n","")=="|":
-    continue
+        continue
     try:
-    #exec vname + '={"__myvalue__":"'+api[x].replace("\n","")+'",}'
+        #exec vname + '={"__myvalue__":"'+api[x].replace("\n","")+'",}'
         exec vname + '''={"__myvalue__":"""'''+api[x]+'''""",}'''
     except:
         pass
-    #print vname + '={"__myvalue__":"'+api[x].replace("\n","")+'",}'
+        #print vname + '={"__myvalue__":"'+api[x].replace("\n","")+'",}'
 
 import cPickle
 import gzip
